@@ -2,8 +2,6 @@
 #include <unistd.h>
 #include "LineBuffer.h"
 
-LineBuffer lnB;
-
 #define ERS_LINE	"\x1B\x5B\x4B"
 #define DEL_LINE	"\x1B\x5B\x4D"
 #define CUR_UP		"\x1B\x5B\x41"
@@ -13,18 +11,34 @@ LineBuffer lnB;
 #define CUR_NLINE	"\x1B\x5B\x45"
 #define CUR_PLINE	"\x1B\x5B\x46"
 
+void printWFlush(const char *str)
+{
+	fputs(str, stdout);
+	fflush(stdout);
+}
+
+void printLineBuffer(LineBuffer &line, char *buf)
+{
+	line.GetLine(buf);
+	printWFlush(buf);
+}
+
 int main()
 {
+	LineBuffer line;
 	char lineBuf[MAX_LINELEN];
-	lnB.GetLine(lineBuf);
-	puts(lineBuf);
+	printLineBuffer(line, lineBuf);
 	sleep(1);
-	lnB.HandleKey(KeyBackspace);
-	lnB.GetLine(lineBuf);
-	puts(lineBuf);
+
+	printWFlush(DEL_LINE);
+	line.HandleKey(KeyBackspace);
+	printLineBuffer(line, lineBuf);
 	sleep(1);
-	lnB.HandleKey(KeyDelete);
-	lnB.GetLine(lineBuf);
-	puts(lineBuf);
+
+	printWFlush(DEL_LINE);
+	line.HandleKey(KeyDelete);
+	printLineBuffer(line, lineBuf);
+	fputs("\n", stdout);
+
 	return 0;
 }
