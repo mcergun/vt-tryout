@@ -33,7 +33,10 @@ private:
 	int HandleDelKey();
 	int HandleBackspaceKey();
 	int HandleEnterKey();
-	int HandleArrowKeys(Keys key);
+	int HandleUpArrowKey();
+	int HandleDownArrowKey();
+	int HandleRightArrowKey();
+	int HandleLeftArrowKey();
 };
 
 #endif

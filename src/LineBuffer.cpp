@@ -27,10 +27,16 @@ int LineBuffer::HandleKey(Keys key)
 		ret = HandleEnterKey();
 		break;
 	case KeyUArrow:
+		ret = HandleUpArrowKey();
+		break;
 	case KeyDArrow:
+		ret = HandleDownArrowKey();
+		break;
 	case KeyRArrow:
+		ret = HandleRightArrowKey();
+		break;
 	case KeyLArrow:
-		ret = HandleArrowKeys(key);
+		ret = HandleLeftArrowKey();
 		break;
 	}
 
@@ -100,9 +106,46 @@ int LineBuffer::HandleEnterKey()
 	return ret;
 }
 
-int LineBuffer::HandleArrowKeys(Keys k)
+int LineBuffer::HandleUpArrowKey()
 {
 	int ret = 0;
+	// Copy last next history entry to line buffer
+	return ret;
+}
 
+int LineBuffer::HandleDownArrowKey()
+{
+	int ret = 0;
+	// Copy last previous history entry to line buffer
+	return ret;
+}
+
+int LineBuffer::HandleRightArrowKey()
+{
+	int ret = 0;
+	if (curPos < lineLen)
+	{
+		curPos++;
+	}
+	else
+	{
+		ret = -1;
+		curPos = lineLen;
+	}
+	return ret;
+}
+
+int LineBuffer::HandleLeftArrowKey()
+{
+	int ret = 0;
+	if (curPos > 1)
+	{
+		curPos--;
+	}
+	else
+	{
+		ret = -1;
+		curPos = 0;
+	}
 	return ret;
 }
