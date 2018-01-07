@@ -12,14 +12,6 @@ LineBuffer::LineBuffer()
 	curPos = 3;
 }
 
-void LineBuffer::CopyToLine(void *ptr, int len)
-{
-	strcpy(line, reinterpret_cast<char *>(ptr));
-	int newLen = strlen(line);
-	curPos = newLen;
-	lineLen = newLen; 
-}
-
 int LineBuffer::HandleKey(Keys key)
 {
 	int ret = 0;
@@ -34,7 +26,28 @@ int LineBuffer::HandleKey(Keys key)
 	case KeyEnter:
 		ret = HandleEnterKey();
 		break;
+	case KeyUArrow:
+	case KeyDArrow:
+	case KeyRArrow:
+	case KeyLArrow:
+		ret = HandleArrowKeys(key);
+		break;
 	}
+
+	return ret;
+}
+
+void LineBuffer::GetLine(void *dst)
+{
+	strcpy(reinterpret_cast<char *>(dst), line);
+}
+
+void LineBuffer::CopyToLine(void *ptr, int len)
+{
+	strcpy(line, reinterpret_cast<char *>(ptr));
+	int newLen = strlen(line);
+	curPos = newLen;
+	lineLen = newLen; 
 }
 
 int LineBuffer::HandleDelKey()
@@ -82,11 +95,14 @@ int LineBuffer::HandleEnterKey()
 	{
 		strcpy(lineHistory[historyCount++], line);
 		memset(line, 0, MAX_LINELEN);
+		curPos = 0;
 	}
 	return ret;
 }
 
-int LineBuffer::HandleArrowKeys()
+int LineBuffer::HandleArrowKeys(Keys k)
 {
+	int ret = 0;
 
+	return ret;
 }

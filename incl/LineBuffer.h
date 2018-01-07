@@ -20,6 +20,7 @@ class LineBuffer
 public:
 	LineBuffer();
 	int HandleKey(Keys key);
+	void GetLine(void *dst);
 private:
 	char line[MAX_LINELEN] = {0};
 	char lineHistory[MAX_HISTORY][MAX_LINELEN];
@@ -32,7 +33,7 @@ private:
 	int HandleDelKey();
 	int HandleBackspaceKey();
 	int HandleEnterKey();
-	int HandleArrowKeys();
+	int HandleArrowKeys(Keys key);
 };
 
 #endif
