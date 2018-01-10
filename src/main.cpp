@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <unistd.h>
 #include "LineBuffer.h"
+#include "VTConverter.h"
 
 #define ERS_LINE	"\x1B\x5B\x4B"
 #define DEL_LINE	"\x1B\x5B\x4D"
@@ -33,6 +34,11 @@ int main()
 	printWFlush(DEL_LINE);
 	line.HandleKey(KeyBackspace);
 	printLineBuffer(line, lineBuf);
+	sleep(1);
+
+	char str[16] = {0};
+	VTConverter::ToAnsiiCode(str, Escape_EraseDisplay);
+	printWFlush(str);
 	sleep(1);
 
 	printWFlush(DEL_LINE);
