@@ -1,27 +1,41 @@
 #ifndef _VT_CONVERTER_
 #define _VT_CONVERTER_
 
-enum KeyCodes
-{
-
-//  CUU             Cursor up               esc [ A         1B 5B 41
-//  CUD             Cursor down             esc [ B         1B 5B 42
-//  CUF             Cursor forward          esc [ C         1B 5B 43
-//  CUB             Cursor backward         esc [ D         1B 5B 44
-
-};
-
-
 enum EscapeCodes
 {
+	// General input/output commands
 	Escape_CursorUp,
 	Escape_CursorDown,
 	Escape_CursorForward,
 	Escape_CursorBackward,
+	// Output commands
 	Escape_SaveCursorPos,
 	Escape_RestoreCursorPos,
 	Escape_EraseDisplay,
 	Escape_EraseLine,
+	Escape_DeleteCharacter,
+	Escape_EraseCharacter,
+	// Input commands
+	Escape_Delete,
+	Escape_Backspace,
+	Escape_Keypad0,
+	Escape_Keypad1,
+	Escape_Keypad2,
+	Escape_Keypad3,
+	Escape_Keypad4,
+	Escape_Keypad5,
+	Escape_Keypad6,
+	Escape_Keypad7,
+	Escape_Keypad8,
+	Escape_Keypad9,
+	Escape_Keypadminus,
+	Escape_Keypadcomma,
+	Escape_Keypadperiod,
+	Escape_KeypadEnter,
+	Escape_KeypadPF1,
+	Escape_KeypadPF2,
+	Escape_KeypadPF3,
+	Escape_KeypadPF4,
 };
 
 class VTConverter
