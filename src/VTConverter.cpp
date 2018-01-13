@@ -1,16 +1,22 @@
 #include <cstring>
 #include "VTConverter.h"
 
-//  CUU             Cursor up               esc [ A         1B 5B 41
-//  CUD             Cursor down             esc [ B         1B 5B 42
-//  CUF             Cursor forward          esc [ C         1B 5B 43
-//  CUB             Cursor backward         esc [ D         1B 5B 44
+// Some of the following sequences can be used for N times
+// Those are marked with {n}, simply replace {n} with "string" number
+// Move cursor forward 5 times -> "\x1B\x5B" "5\x43"
+
+// Erase character and delete character seem to be doing the same thing?
+
+//  CUU             Cursor up               esc [ A         1B 5B {n} 41
+//  CUD             Cursor down             esc [ B         1B 5B {n} 42
+//  CUF             Cursor forward          esc [ C         1B 5B {n} 43
+//  CUB             Cursor backward         esc [ D         1B 5B {n} 44
 //  SC              Save cursor             esc [ s         1B 5B 73
 //  RC              Restore cursor          esc [ u         1B 5B 75
 //  ED              Erase display           esc [ 2 J       1B 5B 32 4A
 //  EL              Erase line              esc [ K         1B 5B 4B
-//  DCH             Delete character        esc [ P         1B 5B 50
-//  ECH             Erase character         esc [ X         1B 5B 58
+//  DCH             Delete character        esc [ P         1B 5B {n} 50
+//  ECH             Erase character         esc [ X         1B 5B {n} 58
 //  DEL             Delete                  del             7F
 //  BS              Back space              bs              08
 //  AK-0            App keypad 0            esc O p         1B 4F 70

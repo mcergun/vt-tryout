@@ -4,10 +4,11 @@
 LineBuffer::LineBuffer()
 {
 	// test code, remove it later
-	char *line = "Ahmet Mehmet";
+	char line[1024];
+	strcpy(line, "Ahmet Mehmet");
 	CopyToLine(line, strlen(line));
 	HandleEnterKey();
-	line = "Ayse Fatma";
+	strcpy(line, "Ayse Fatma");
 	CopyToLine(line, strlen(line));
 	curPos = 3;
 }
@@ -97,7 +98,7 @@ int LineBuffer::HandleBackspaceKey()
 int LineBuffer::HandleEnterKey()
 {
 	int ret = 0;
-	if (lineLen > 0)
+	if (lineLen > 0 && strcmp(line, lineHistory[historyCount - 1]) != 0)
 	{
 		strcpy(lineHistory[historyCount++], line);
 		memset(line, 0, MAX_LINELEN);
