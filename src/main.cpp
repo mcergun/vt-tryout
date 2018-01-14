@@ -1,5 +1,7 @@
 #include <cstdio>
 #include <unistd.h>
+#include <termios.h>
+#include <cstring>
 #include "LineBuffer.h"
 #include "VTConverter.h"
 
@@ -24,27 +26,50 @@ void printLineBuffer(LineBuffer &line, char *buf)
 	printWFlush(buf);
 }
 
+int setAttributes(termios *term, termios *termOrig)
+{
+	tcgetattr(0, term);
+	// save original state
+	*termOrig = *term;
+
+	// tcflag_t c_iflag;      /* input modes */
+	// tcflag_t c_oflag;      /* output modes */
+	// tcflag_t c_cflag;      /* control modes */ 
+	// tcflag_t c_lflag;      /* local modes */
+	// cc_t     c_cc[NCCS];   /* special characters */
+
+	term->c_lflag &= ~ICANON;
+	term->c_lflag &= ~ECHO;
+	term->c_cc[VMIN] = 0;
+	term->c_cc[VTIME] = 0;
+	// cfmakeraw(term);
+
+	return tcsetattr(0, TCSANOW, term);
+}
+
 int main()
 {
-	LineBuffer line;
-	char lineBuf[MAX_LINELEN];
-	printLineBuffer(line, lineBuf);
-	sleep(1);
+	termios term, termOrig;
+	char buf[16];
 
-	printWFlush(DEL_LINE);
-	line.HandleKey(KeyBackspace);
-	printLineBuffer(line, lineBuf);
-	sleep(1);
-
-	char str[16] = {0};
-	VTConverter::ToAnsiiCode(str, Escape_EraseDisplay);
-	printWFlush(str);
-	sleep(1);
-
-	printWFlush(DEL_LINE);
-	line.HandleKey(KeyDelete);
-	printLineBuffer(line, lineBuf);
-	fputs("\n", stdout);
+	if(setAttributes(&term, &termOrig))
+	{
+		printWFlush("Failed to set terminal attributes\n");
+	}
+	else
+	{
+		while(1)
+		{
+			if(read(0, buf, 1))
+			{
+				for(unsigned int i = 0; i < strlen(buf); ++i)
+				{
+					printf("%02x ", buf[i]);
+				}
+				fflush(0);
+			}
+		}
+	}
 
 	return 0;
 }

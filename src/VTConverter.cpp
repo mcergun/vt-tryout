@@ -7,6 +7,43 @@
 
 // Erase character and delete character seem to be doing the same thing?
 
+// Following codes are gathered by me on ubuntu terminal with ~ICANON and ~ECHO
+// Backspace		7f
+// Delete		1b 5b 33 7e
+// End			1b 5b 46
+// Home			1b 5b 48
+// Enter		0a
+// Minus		2d
+// Plus			2b
+// Asterisk		2a
+// Divide		2f
+// Dot			2e
+// Comma		2c
+// Single Quote		27
+// Double Quote		22
+// Semicolon		3b
+// Colon		3a
+// Less than		3c
+// Greater than		3e
+// Question Mark	3f
+// Tilda		7e
+// Exclamation Mark	21
+// At Symbol		40
+// Sharp Symbol		23
+// Dollar Sign		24
+// Percentage Symbol	25
+// Hat Symbol		5e
+// Ampercend		26
+// Parantheses Start	28
+// Parantheses End	29
+// Underscore		5f
+// Curly Braces Start	7b
+// Curly Braces End	7d
+// Tab			09
+// Backslash		5c
+// Pipe sign? |		7c
+
+
 //  CUU             Cursor up               esc [ A         1B 5B {n} 41
 //  CUD             Cursor down             esc [ B         1B 5B {n} 42
 //  CUF             Cursor forward          esc [ C         1B 5B {n} 43
