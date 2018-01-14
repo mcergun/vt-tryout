@@ -1,6 +1,48 @@
 #ifndef _VT_CONVERTER_
 #define _VT_CONVERTER_
 
+enum InputCodes
+{
+	Input_Delete,
+	Input_End,
+	Input_Home,
+	Input_CursorUp,
+	Input_CursorDown,
+	Input_CursorForward,
+	Input_CursorBackward,
+	Input_Backspace,
+	Input_Enter,
+	Input_Minus,
+	Input_Plus,
+	Input_Asterisk,
+	Input_Divide,
+	Input_Dot,
+	Input_Comma,
+	Input_SingleQuote,
+	Input_DoubleQuote,
+	Input_Semicolon,
+	Input_Colon,
+	Input_LessThan,
+	Input_GreaterThan,
+	Input_QuestionMark,
+	Input_Tilda,
+	Input_ExclamationMark,
+	Input_AtSymbol,
+	Input_SharpSymbol,
+	Input_DollarSign,
+	Input_PercentageSymbol,
+	Input_HatSymbol,
+	Input_Ampercend,
+	Input_ParanthesesStart,
+	Input_ParanthesesEnd,
+	Input_Underscore,
+	Input_CurlyBracesStart,
+	Input_CurlyBracesEnd,
+	Input_Tab,
+	Input_Backslash,
+	Input_Pipe,
+};
+
 enum EscapeCodes
 {
 	// General input/output commands
@@ -43,6 +85,7 @@ class VTConverter
 public:
 	
 static int ToAnsiiCode(char *str, EscapeCodes code);
+static int ToInputEnum(InputCodes *code, char *str);
 
 };
 

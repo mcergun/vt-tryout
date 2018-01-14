@@ -8,10 +8,14 @@
 // Erase character and delete character seem to be doing the same thing?
 
 // Following codes are gathered by me on ubuntu terminal with ~ICANON and ~ECHO
-// Backspace		7f
 // Delete		1b 5b 33 7e
 // End			1b 5b 46
 // Home			1b 5b 48
+// Cursor Up		1b 5b 41
+// Cursor Down		1b 5b 42
+// Cursor Forward	1b 5b 43
+// Cursor Backward	1b 5b 44
+// Backspace		7f
 // Enter		0a
 // Minus		2d
 // Plus			2b
@@ -42,7 +46,6 @@
 // Tab			09
 // Backslash		5c
 // Pipe sign? |		7c
-
 
 //  CUU             Cursor up               esc [ A         1B 5B {n} 41
 //  CUD             Cursor down             esc [ B         1B 5B {n} 42
@@ -172,6 +175,171 @@ int VTConverter::ToAnsiiCode(char *str, EscapeCodes code)
 	default:
 		ret = -1;
 		break;
+	}
+
+	return ret;
+}
+
+int VTConverter::ToInputEnum(InputCodes *code, char *str)
+{
+	int ret = 0 ;
+	int len = strlen(str);
+
+	if (len < 3)
+	{
+		// pass escape codes, length is too short
+		switch(str[0])
+		{
+		case '\x7f':
+			*code = Input_Backspace;
+			break;
+		case '\x0a':
+			*code = Input_Enter;
+			break;
+		case '\x2d':
+			*code = Input_Minus;
+			break;
+		case '\x2b':
+			*code = Input_Plus;
+			break;
+		case '\x2a':
+			*code = Input_Asterisk;
+			break;
+		case '\x2f':
+			*code = Input_Divide;
+			break;
+		case '\x2e':
+			*code = Input_Dot;
+			break;
+		case '\x2c':
+			*code = Input_Comma;
+			break;
+		case '\x27':
+			*code = Input_SingleQuote;
+			break;
+		case '\x22':
+			*code = Input_DoubleQuote;
+			break;
+		case '\x3b':
+			*code = Input_Semicolon;
+			break;
+		case '\x3a':
+			*code = Input_Colon;
+			break;
+		case '\x3c':
+			*code = Input_LessThan;
+			break;
+		case '\x3e':
+			*code = Input_GreaterThan;
+			break;
+		case '\x3f':
+			*code = Input_QuestionMark;
+			break;
+		case '\x7e':
+			*code = Input_Tilda;
+			break;
+		case '\x21':
+			*code = Input_ExclamationMark;
+			break;
+		case '\x40':
+			*code = Input_AtSymbol;
+			break;
+		case '\x23':
+			*code = Input_SharpSymbol;
+			break;
+		case '\x24':
+			*code = Input_DollarSign;
+			break;
+		case '\x25':
+			*code = Input_PercentageSymbol;
+			break;
+		case '\x5e':
+			*code = Input_HatSymbol;
+			break;
+		case '\x26':
+			*code = Input_Ampercend;
+			break;
+		case '\x28':
+			*code = Input_ParanthesesStart;
+			break;
+		case '\x29':
+			*code = Input_ParanthesesEnd;
+			break;
+		case '\x5f':
+			*code = Input_Underscore;
+			break;
+		case '\x7b':
+			*code = Input_CurlyBracesStart;
+			break;
+		case '\x7d':
+			*code = Input_CurlyBracesEnd;
+			break;
+		case '\x09':
+			*code = Input_Tab;
+			break;
+		case '\x5c':
+			*code = Input_Backslash;
+			break;
+		case '\x7c':
+			*code = Input_Pipe;
+			break;
+		default:
+			ret = -1;
+			break;
+		}
+
+	}
+
+	// Delete		1b 5b 33 7e
+	// End			1b 5b 46
+	// Home			1b 5b 48
+	// Cursor Up		1b 5b 41
+	// Cursor Down		1b 5b 42
+	// Cursor Forward	1b 5b 43
+	// Cursor Backward	1b 5b 44
+
+	else if (len == 3)
+	{
+		// this can be a valid escape sequence
+		if (strncmp(str, "\x1b\x5b", 2) != 0)
+		{
+			// well, it isnt
+			ret = -1;
+		}
+		else
+		{
+			switch(str[2])
+			{
+			case '\x33':
+				if (str[3] == '\x7e')
+				{
+					*code = Input_Delete;
+				}
+				else
+				{
+					ret = -1;
+				}
+				break;
+			case '\x46':
+				*code = Input_End;
+				break;
+			case '\x48':
+				*code = Input_Home;
+				break;
+			case '\x41':
+				*code = Input_CursorUp;
+				break;
+			case '\x42':
+				*code = Input_CursorDown;
+				break;
+			case '\x43':
+				*code = Input_CursorForward;
+				break;
+			case '\x44':
+				*code = Input_CursorBackward;
+				break;
+			}
+		}
 	}
 
 	return ret;
