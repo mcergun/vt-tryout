@@ -50,7 +50,8 @@ int setAttributes(termios *term, termios *termOrig)
 int main()
 {
 	termios term, termOrig;
-	char buf[16];
+	char buf[16] = {0};
+	VTConverter conv;
 
 	if(setAttributes(&term, &termOrig))
 	{
@@ -62,10 +63,9 @@ int main()
 		{
 			if(read(0, buf, 1))
 			{
-				for(unsigned int i = 0; i < strlen(buf); ++i)
-				{
-					printf("%02x ", buf[i]);
-				}
+				InputCodes code;
+				if(!(conv.ToInputEnum(&code, buf)) && (code != Input_Unknown && code != Input_Escape))
+					printf("[%s, %d]", buf, code);
 				fflush(0);
 			}
 		}

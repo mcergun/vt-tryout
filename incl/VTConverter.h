@@ -3,6 +3,8 @@
 
 enum InputCodes
 {
+	Input_Escape,
+	Input_Unknown,
 	Input_Delete,
 	Input_End,
 	Input_Home,
@@ -10,6 +12,8 @@ enum InputCodes
 	Input_CursorDown,
 	Input_CursorForward,
 	Input_CursorBackward,
+	Input_Numerical,
+	Input_Letters,
 	Input_Backspace,
 	Input_Enter,
 	Input_Minus,
@@ -84,9 +88,13 @@ class VTConverter
 {
 public:
 	
-static int ToAnsiiCode(char *str, EscapeCodes code);
-static int ToInputEnum(InputCodes *code, char *str);
+int ToAnsiiCode(char *str, EscapeCodes code);
+int ToInputEnum(InputCodes *code, char *str);
 
+private:
+
+bool isEscapeSequence = false;
+int seqLen = 0;
 };
 
 //  Mnemonic        Command                 ASCII           HEX

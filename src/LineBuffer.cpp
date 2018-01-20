@@ -73,7 +73,6 @@ int LineBuffer::HandleDelKey()
 	}
 
 	return ret;
-
 }
 
 int LineBuffer::HandleBackspaceKey()
@@ -104,6 +103,7 @@ int LineBuffer::HandleEnterKey()
 		memset(line, 0, MAX_LINELEN);
 		curPos = 0;
 	}
+
 	return ret;
 }
 
@@ -148,5 +148,6 @@ int LineBuffer::HandleLeftArrowKey()
 		ret = -1;
 		curPos = 0;
 	}
+	
 	return ret;
 }

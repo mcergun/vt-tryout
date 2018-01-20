@@ -182,165 +182,201 @@ int VTConverter::ToAnsiiCode(char *str, EscapeCodes code)
 
 int VTConverter::ToInputEnum(InputCodes *code, char *str)
 {
-	int ret = 0 ;
-	int len = strlen(str);
-
-	if (len < 3)
+	int ret = 0;
+	int curLen = strlen(str);
+	InputCodes retCode = Input_Unknown;
+	for (int i = 0; i < curLen; ++i)
 	{
-		// pass escape codes, length is too short
-		switch(str[0])
+		char curChar = str[i];
+
+		if (!isEscapeSequence)
 		{
-		case '\x7f':
-			*code = Input_Backspace;
-			break;
-		case '\x0a':
-			*code = Input_Enter;
-			break;
-		case '\x2d':
-			*code = Input_Minus;
-			break;
-		case '\x2b':
-			*code = Input_Plus;
-			break;
-		case '\x2a':
-			*code = Input_Asterisk;
-			break;
-		case '\x2f':
-			*code = Input_Divide;
-			break;
-		case '\x2e':
-			*code = Input_Dot;
-			break;
-		case '\x2c':
-			*code = Input_Comma;
-			break;
-		case '\x27':
-			*code = Input_SingleQuote;
-			break;
-		case '\x22':
-			*code = Input_DoubleQuote;
-			break;
-		case '\x3b':
-			*code = Input_Semicolon;
-			break;
-		case '\x3a':
-			*code = Input_Colon;
-			break;
-		case '\x3c':
-			*code = Input_LessThan;
-			break;
-		case '\x3e':
-			*code = Input_GreaterThan;
-			break;
-		case '\x3f':
-			*code = Input_QuestionMark;
-			break;
-		case '\x7e':
-			*code = Input_Tilda;
-			break;
-		case '\x21':
-			*code = Input_ExclamationMark;
-			break;
-		case '\x40':
-			*code = Input_AtSymbol;
-			break;
-		case '\x23':
-			*code = Input_SharpSymbol;
-			break;
-		case '\x24':
-			*code = Input_DollarSign;
-			break;
-		case '\x25':
-			*code = Input_PercentageSymbol;
-			break;
-		case '\x5e':
-			*code = Input_HatSymbol;
-			break;
-		case '\x26':
-			*code = Input_Ampercend;
-			break;
-		case '\x28':
-			*code = Input_ParanthesesStart;
-			break;
-		case '\x29':
-			*code = Input_ParanthesesEnd;
-			break;
-		case '\x5f':
-			*code = Input_Underscore;
-			break;
-		case '\x7b':
-			*code = Input_CurlyBracesStart;
-			break;
-		case '\x7d':
-			*code = Input_CurlyBracesEnd;
-			break;
-		case '\x09':
-			*code = Input_Tab;
-			break;
-		case '\x5c':
-			*code = Input_Backslash;
-			break;
-		case '\x7c':
-			*code = Input_Pipe;
-			break;
-		default:
-			ret = -1;
-			break;
-		}
-
-	}
-
-	// Delete		1b 5b 33 7e
-	// End			1b 5b 46
-	// Home			1b 5b 48
-	// Cursor Up		1b 5b 41
-	// Cursor Down		1b 5b 42
-	// Cursor Forward	1b 5b 43
-	// Cursor Backward	1b 5b 44
-
-	else if (len == 3)
-	{
-		// this can be a valid escape sequence
-		if (strncmp(str, "\x1b\x5b", 2) != 0)
-		{
-			// well, it isnt
-			ret = -1;
+			if (curChar == 0x1B)
+			{
+				// should be followed by an escape sequence
+				isEscapeSequence = true;
+				seqLen++;
+				retCode = Input_Escape;
+			}
+			else
+			{
+				// should be a visual character
+				switch (curChar)
+				{
+				case 0x7f:
+					retCode = Input_Backspace;
+					break;
+				case 0x0a:
+					retCode = Input_Enter;
+					break;
+				case 0x2d:
+					retCode = Input_Minus;
+					break;
+				case 0x2b:
+					retCode = Input_Plus;
+					break;
+				case 0x2a:
+					retCode = Input_Asterisk;
+					break;
+				case 0x2f:
+					retCode = Input_Divide;
+					break;
+				case 0x2e:
+					retCode = Input_Dot;
+					break;
+				case 0x2c:
+					retCode = Input_Comma;
+					break;
+				case 0x27:
+					retCode = Input_SingleQuote;
+					break;
+				case 0x22:
+					retCode = Input_DoubleQuote;
+					break;
+				case 0x3b:
+					retCode = Input_Semicolon;
+					break;
+				case 0x3a:
+					retCode = Input_Colon;
+					break;
+				case 0x3c:
+					retCode = Input_LessThan;
+					break;
+				case 0x3e:
+					retCode = Input_GreaterThan;
+					break;
+				case 0x3f:
+					retCode = Input_QuestionMark;
+					break;
+				case 0x7e:
+					retCode = Input_Tilda;
+					break;
+				case 0x21:
+					retCode = Input_ExclamationMark;
+					break;
+				case 0x40:
+					retCode = Input_AtSymbol;
+					break;
+				case 0x23:
+					retCode = Input_SharpSymbol;
+					break;
+				case 0x24:
+					retCode = Input_DollarSign;
+					break;
+				case 0x25:
+					retCode = Input_PercentageSymbol;
+					break;
+				case 0x5e:
+					retCode = Input_HatSymbol;
+					break;
+				case 0x26:
+					retCode = Input_Ampercend;
+					break;
+				case 0x28:
+					retCode = Input_ParanthesesStart;
+					break;
+				case 0x29:
+					retCode = Input_ParanthesesEnd;
+					break;
+				case 0x5f:
+					retCode = Input_Underscore;
+					break;
+				case 0x7b:
+					retCode = Input_CurlyBracesStart;
+					break;
+				case 0x7d:
+					retCode = Input_CurlyBracesEnd;
+					break;
+				case 0x09:
+					retCode = Input_Tab;
+					break;
+				case 0x5c:
+					retCode = Input_Backslash;
+					break;
+				case 0x7c:
+					retCode = Input_Pipe;
+					break;
+				default:
+					if ((curChar >= 'a' && curChar <= 'z') ||
+					    (curChar >= 'A' && curChar <= 'Z'))
+						retCode = Input_Letters;
+					else if (curChar >= '0' && curChar <= '9')
+						retCode = Input_Numerical;
+					else
+						ret = -1;
+					break;
+				}
+			}
 		}
 		else
 		{
-			switch(str[2])
+			// continue checking characters for incoming parts
+			if (seqLen == 1 && curChar == 0x5B)
 			{
-			case '\x33':
-				if (str[3] == '\x7e')
+				seqLen++;
+				retCode = Input_Escape;
+			}
+			else if (seqLen == 2)
+			{
+				switch (curChar)
 				{
-					*code = Input_Delete;
+				case 0x46:
+					retCode = Input_End;
+					break;
+				case 0x48:
+					retCode = Input_Home;
+					break;
+				case 0x41:
+					retCode = Input_CursorUp;
+					break;
+				case 0x42:
+					retCode = Input_CursorDown;
+					break;
+				case 0x43:
+					retCode = Input_CursorForward;
+					break;
+				case 0x44:
+					retCode = Input_CursorBackward;
+					break;
+				case 0x33:
+					seqLen++;
+					break;
+				default:
+					ret = -1;
+					break;
+				}
+			}
+			else if (seqLen == 3)
+			{
+				if (curChar == 0x7E)
+				{
+					retCode = Input_Delete;
 				}
 				else
 				{
 					ret = -1;
 				}
-				break;
-			case '\x46':
-				*code = Input_End;
-				break;
-			case '\x48':
-				*code = Input_Home;
-				break;
-			case '\x41':
-				*code = Input_CursorUp;
-				break;
-			case '\x42':
-				*code = Input_CursorDown;
-				break;
-			case '\x43':
-				*code = Input_CursorForward;
-				break;
-			case '\x44':
-				*code = Input_CursorBackward;
-				break;
+			}
+			else
+			{
+				ret = -1;
 			}
 		}
 	}
+	if ((retCode != Input_Unknown && retCode != Input_Escape) || ret != 0)
+	{
+		// refresh status variables if return code has been altered
+		seqLen = 0;
+		isEscapeSequence = false;
+	}
 
+	*code = retCode;
 	return ret;
 }
+
+// End			1b 5b 46
+// Home			1b 5b 48
+// Cursor Up		1b 5b 41
+// Cursor Down		1b 5b 42
+// Cursor Forward	1b 5b 43
+// Cursor Backward	1b 5b 44
