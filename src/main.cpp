@@ -64,8 +64,19 @@ int main()
 			if(read(0, buf, 1))
 			{
 				InputCodes code;
-				if(!(conv.ToInputEnum(&code, buf)) && (code != Input_Unknown && code != Input_Escape))
+				int ret = conv.ToInputEnum(&code, buf);
+				switch (code)
+				{
+				case Input_Unknown:
+					printf("[U%d]", ret);
+					break;
+				case Input_Escape:
+					printf("[E%d]", ret);
+					break;
+				default:
 					printf("[%s, %d]", buf, code);
+					break;
+				}
 				fflush(0);
 			}
 		}

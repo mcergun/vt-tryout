@@ -15,8 +15,9 @@
 // Cursor Down		1b 5b 42
 // Cursor Forward	1b 5b 43
 // Cursor Backward	1b 5b 44
-// Backspace		7f
 // Enter		0a
+// Tab			09
+// Backspace		7f
 // Minus		2d
 // Plus			2b
 // Asterisk		2a
@@ -43,7 +44,6 @@
 // Underscore		5f
 // Curly Braces Start	7b
 // Curly Braces End	7d
-// Tab			09
 // Backslash		5c
 // Pipe sign? |		7c
 
@@ -203,101 +203,45 @@ int VTConverter::ToInputEnum(InputCodes *code, char *str)
 				// should be a visual character
 				switch (curChar)
 				{
-				case 0x20:
-					retCode = Input_Space;
-					break;
-				case 0x7f:
-					retCode = Input_Backspace;
-					break;
 				case 0x0a:
 					retCode = Input_Enter;
-					break;
-				case 0x2d:
-					retCode = Input_Minus;
-					break;
-				case 0x2b:
-					retCode = Input_Plus;
-					break;
-				case 0x2a:
-					retCode = Input_Asterisk;
-					break;
-				case 0x2f:
-					retCode = Input_Divide;
-					break;
-				case 0x2e:
-					retCode = Input_Dot;
-					break;
-				case 0x2c:
-					retCode = Input_Comma;
-					break;
-				case 0x27:
-					retCode = Input_SingleQuote;
-					break;
-				case 0x22:
-					retCode = Input_DoubleQuote;
-					break;
-				case 0x3b:
-					retCode = Input_Semicolon;
-					break;
-				case 0x3a:
-					retCode = Input_Colon;
-					break;
-				case 0x3c:
-					retCode = Input_LessThan;
-					break;
-				case 0x3e:
-					retCode = Input_GreaterThan;
-					break;
-				case 0x3f:
-					retCode = Input_QuestionMark;
-					break;
-				case 0x7e:
-					retCode = Input_Tilda;
-					break;
-				case 0x21:
-					retCode = Input_ExclamationMark;
-					break;
-				case 0x40:
-					retCode = Input_AtSymbol;
-					break;
-				case 0x23:
-					retCode = Input_SharpSymbol;
-					break;
-				case 0x24:
-					retCode = Input_DollarSign;
-					break;
-				case 0x25:
-					retCode = Input_PercentageSymbol;
-					break;
-				case 0x5e:
-					retCode = Input_HatSymbol;
-					break;
-				case 0x26:
-					retCode = Input_Ampercend;
-					break;
-				case 0x28:
-					retCode = Input_ParanthesesStart;
-					break;
-				case 0x29:
-					retCode = Input_ParanthesesEnd;
-					break;
-				case 0x5f:
-					retCode = Input_Underscore;
-					break;
-				case 0x7b:
-					retCode = Input_CurlyBracesStart;
-					break;
-				case 0x7d:
-					retCode = Input_CurlyBracesEnd;
 					break;
 				case 0x09:
 					retCode = Input_Tab;
 					break;
-				case 0x5c:
-					retCode = Input_Backslash;
+				case 0x7f:
+					retCode = Input_Backspace;
 					break;
+				case 0x20:
+				case 0x2d:
+				case 0x2b:
+				case 0x2a:
+				case 0x2f:
+				case 0x2e:
+				case 0x2c:
+				case 0x27:
+				case 0x22:
+				case 0x3b:
+				case 0x3a:
+				case 0x3c:
+				case 0x3e:
+				case 0x3f:
+				case 0x7e:
+				case 0x21:
+				case 0x40:
+				case 0x23:
+				case 0x24:
+				case 0x25:
+				case 0x5e:
+				case 0x26:
+				case 0x28:
+				case 0x29:
+				case 0x5f:
+				case 0x7b:
+				case 0x7d:
+				case 0x5c:
 				case 0x7c:
-					retCode = Input_Pipe;
+					retCode = Input_SpecialSymbols;
 					break;
 				default:
 					if ((curChar >= 'a' && curChar <= 'z') ||
@@ -343,6 +287,7 @@ int VTConverter::ToInputEnum(InputCodes *code, char *str)
 					break;
 				case 0x33:
 					seqLen++;
+					retCode = Input_Escape;
 					break;
 				default:
 					ret = -1;
