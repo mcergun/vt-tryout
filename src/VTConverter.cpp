@@ -47,6 +47,65 @@
 // Backslash		5c
 // Pipe sign? |		7c
 
+int VTConverter::ToEnumString(char *str, InputCodes code)
+{
+	int ret = 0;
+	switch (code)
+	{
+		case Input_Escape:
+			strcpy(str, "Escape");
+			break;
+		case Input_Unknown:
+			strcpy(str, "Unknown");
+			break;
+		case Input_Delete:
+			strcpy(str, "Delete");
+			break;
+		case Input_End:
+			strcpy(str, "End");
+			break;
+		case Input_Home:
+			strcpy(str, "Home");
+			break;
+		case Input_CursorUp:
+			strcpy(str, "CursorUp");
+			break;
+		case Input_CursorDown:
+			strcpy(str, "CursorDown");
+			break;
+		case Input_CursorForward:
+			strcpy(str, "CursorForward");
+			break;
+		case Input_CursorBackward:
+			strcpy(str, "CursorBackward");
+			break;
+		case Input_Enter:
+			strcpy(str, "Enter");
+			break;
+		case Input_Tab:
+			strcpy(str, "Tab");
+			break;
+		case Input_Backspace:
+			strcpy(str, "Backspace");
+			break;
+		case Input_Numerical:
+			strcpy(str, "Numerical");
+			break;
+		case Input_Letters:
+			strcpy(str, "Letters");
+			break;
+		case Input_SpecialSymbols:
+			strcpy(str, "SpecialSymbols");
+			break;
+		default:
+			strcpy(str, "Input_Unknown");
+			ret = -1;
+			break;	
+	}
+
+	return ret;
+}
+
 //  CUU             Cursor up               esc [ A         1B 5B {n} 41
 //  CUD             Cursor down             esc [ B         1B 5B {n} 42
 //  CUF             Cursor forward          esc [ C         1B 5B {n} 43
@@ -180,11 +239,10 @@ int VTConverter::ToAnsiiCode(char *str, EscapeCodes code)
 	return ret;
 }
 
-int VTConverter::ToInputEnum(InputCodes *code, char *str)
+int VTConverter::ToInputEnum(InputCodes &code, char *str)
 {
 	int ret = 0;
 	int curLen = strlen(str);
-	InputCodes retCode = Input_Unknown;
 	for (int i = 0; i < curLen; ++i)
 	{
 		char curChar = str[i];
@@ -196,7 +254,7 @@ int VTConverter::ToInputEnum(InputCodes *code, char *str)
 				// should be followed by an escape sequence
 				isEscapeSequence = true;
 				seqLen++;
-				retCode = Input_Escape;
+				code = Input_Escape;
 			}
 			else
 			{
@@ -204,13 +262,13 @@ int VTConverter::ToInputEnum(InputCodes *code, char *str)
 				switch (curChar)
 				{
 				case 0x0a:
-					retCode = Input_Enter;
+					code = Input_Enter;
 					break;
 				case 0x09:
-					retCode = Input_Tab;
+					code = Input_Tab;
 					break;
 				case 0x7f:
-					retCode = Input_Backspace;
+					code = Input_Backspace;
 					break;
 				case 0x20:
 				case 0x2d:
@@ -241,14 +299,14 @@ int VTConverter::ToInputEnum(InputCodes *code, char *str)
 				case 0x7d:
 				case 0x5c:
 				case 0x7c:
-					retCode = Input_SpecialSymbols;
+					code = Input_SpecialSymbols;
 					break;
 				default:
 					if ((curChar >= 'a' && curChar <= 'z') ||
 					    (curChar >= 'A' && curChar <= 'Z'))
-						retCode = Input_Letters;
+						code = Input_Letters;
 					else if (curChar >= '0' && curChar <= '9')
-						retCode = Input_Numerical;
+						code = Input_Numerical;
 					else
 						ret = -1;
 					break;
@@ -261,33 +319,33 @@ int VTConverter::ToInputEnum(InputCodes *code, char *str)
 			if (seqLen == 1 && curChar == 0x5B)
 			{
 				seqLen++;
-				retCode = Input_Escape;
+				code = Input_Escape;
 			}
 			else if (seqLen == 2)
 			{
 				switch (curChar)
 				{
 				case 0x46:
-					retCode = Input_End;
+					code = Input_End;
 					break;
 				case 0x48:
-					retCode = Input_Home;
+					code = Input_Home;
 					break;
 				case 0x41:
-					retCode = Input_CursorUp;
+					code = Input_CursorUp;
 					break;
 				case 0x42:
-					retCode = Input_CursorDown;
+					code = Input_CursorDown;
 					break;
 				case 0x43:
-					retCode = Input_CursorForward;
+					code = Input_CursorForward;
 					break;
 				case 0x44:
-					retCode = Input_CursorBackward;
+					code = Input_CursorBackward;
 					break;
 				case 0x33:
 					seqLen++;
-					retCode = Input_Escape;
+					code = Input_Escape;
 					break;
 				default:
 					ret = -1;
@@ -298,7 +356,7 @@ int VTConverter::ToInputEnum(InputCodes *code, char *str)
 			{
 				if (curChar == 0x7E)
 				{
-					retCode = Input_Delete;
+					code = Input_Delete;
 				}
 				else
 				{
@@ -311,14 +369,13 @@ int VTConverter::ToInputEnum(InputCodes *code, char *str)
 			}
 		}
 	}
-	if ((retCode != Input_Unknown && retCode != Input_Escape) || ret != 0)
+	if ((code != Input_Unknown && code != Input_Escape) || ret != 0)
 	{
 		// refresh status variables if return code has been altered
 		seqLen = 0;
 		isEscapeSequence = false;
 	}
 
-	*code = retCode;
 	return ret;
 }
 

@@ -51,6 +51,7 @@ int main()
 {
 	termios term, termOrig;
 	char buf[16] = {0};
+	char enumStr[64] = {0};
 	VTConverter conv;
 
 	if(setAttributes(&term, &termOrig))
@@ -64,17 +65,30 @@ int main()
 			if(read(0, buf, 1))
 			{
 				InputCodes code;
-				int ret = conv.ToInputEnum(&code, buf);
+				int ret = conv.ToInputEnum(code, buf);
+				VTConverter::ToEnumString(enumStr, code);
 				switch (code)
 				{
 				case Input_Unknown:
-					printf("[U%d]", ret);
+					printf("[U, %d]", ret);
 					break;
 				case Input_Escape:
-					printf("[E%d]", ret);
+					printf("[E, %d]", ret);
+					break;
+				case Input_Delete:
+				case Input_End:
+				case Input_Home:
+				case Input_CursorUp:
+				case Input_CursorDown:
+				case Input_CursorForward:
+				case Input_CursorBackward:
+				case Input_Enter:
+				case Input_Tab:
+				case Input_Backspace:
+					printf("[%s, %d]", enumStr, ret);
 					break;
 				default:
-					printf("[%s, %d]", buf, code);
+					printf("[%s, %s]", enumStr, buf);
 					break;
 				}
 				fflush(0);
