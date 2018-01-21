@@ -12,6 +12,7 @@ enum InputCodes
 	Input_CursorDown,
 	Input_CursorForward,
 	Input_CursorBackward,
+	Input_Space,
 	Input_Numerical,
 	Input_Letters,
 	Input_Backspace,

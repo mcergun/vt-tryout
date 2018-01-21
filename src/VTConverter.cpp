@@ -203,6 +203,9 @@ int VTConverter::ToInputEnum(InputCodes *code, char *str)
 				// should be a visual character
 				switch (curChar)
 				{
+				case 0x20:
+					retCode = Input_Space;
+					break;
 				case 0x7f:
 					retCode = Input_Backspace;
 					break;
