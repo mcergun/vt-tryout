@@ -64,10 +64,9 @@ int main()
 		{
 			if(read(0, buf, 1))
 			{
-				char curChar;
-				InputCodes code = conv.ToInputEnum(buf, curChar);
-				VTConverter::ToEnumString(enumStr, code);
-				switch (code)
+				Key k = conv.ToKey(buf);
+				VTConverter::ToEnumString(enumStr, k.code);
+				switch (k.code)
 				{
 				case Input_Unknown:
 					printf("[U]");
@@ -88,7 +87,7 @@ int main()
 					printf("[%s]", enumStr);
 					break;
 				default:
-					printf("[%s, %c]", enumStr, curChar);
+					printf("[%s, %c]", enumStr, k.visual);
 					break;
 				}
 				fflush(0);

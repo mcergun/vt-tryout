@@ -57,6 +57,12 @@ enum EscapeCodes
 	Escape_KeypadPF4,
 };
 
+struct Key
+{
+	InputCodes code;
+	char visual;
+};
+
 class VTConverter
 {
 public:
@@ -64,7 +70,7 @@ public:
 // Test function, not actually needed in later stages
 static int ToEnumString(char *str, InputCodes code);	
 int ToAnsiiCode(char *str, EscapeCodes code);
-InputCodes ToInputEnum(char *str, char &visual);
+Key ToKey(char *str);
 
 private:
 

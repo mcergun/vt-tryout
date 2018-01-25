@@ -239,11 +239,10 @@ int VTConverter::ToAnsiiCode(char *str, EscapeCodes code)
 	return ret;
 }
 
-InputCodes VTConverter::ToInputEnum(char *str, char &visual)
+Key VTConverter::ToKey(char *str)
 {
-	InputCodes code = Input_Unknown;
-	visual = 0;
-	
+	Key k{Input_Unknown, 0};
+
 	int curLen = strlen(str);
 	for (int i = 0; i < curLen; ++i)
 	{
@@ -256,7 +255,7 @@ InputCodes VTConverter::ToInputEnum(char *str, char &visual)
 				// should be followed by an escape sequence
 				isEscapeSequence = true;
 				seqLen++;
-				code = Input_Escape;
+				k.code = Input_Escape;
 			}
 			else
 			{
@@ -264,13 +263,13 @@ InputCodes VTConverter::ToInputEnum(char *str, char &visual)
 				switch (curChar)
 				{
 				case 0x0a:
-					code = Input_Enter;
+					k.code = Input_Enter;
 					break;
 				case 0x09:
-					code = Input_Tab;
+					k.code = Input_Tab;
 					break;
 				case 0x7f:
-					code = Input_Backspace;
+					k.code = Input_Backspace;
 					break;
 				case 0x20:
 				case 0x2d:
@@ -301,20 +300,20 @@ InputCodes VTConverter::ToInputEnum(char *str, char &visual)
 				case 0x7d:
 				case 0x5c:
 				case 0x7c:
-					code = Input_SpecialSymbols;
-					visual = curChar;
+					k.code = Input_SpecialSymbols;
+					k.visual = curChar;
 					break;
 				default:
 					if ((curChar >= 'a' && curChar <= 'z') ||
 					    (curChar >= 'A' && curChar <= 'Z'))
 					{
-						code = Input_Letters;
-						visual = curChar;
+						k.code = Input_Letters;
+						k.visual = curChar;
 					}
 					else if (curChar >= '0' && curChar <= '9')
 					{
-						code = Input_Numerical;
-						visual = curChar;visual = curChar;
+						k.code = Input_Numerical;
+						k.visual = curChar;
 					}
 					// else, keep code as unknown
 					break;
@@ -327,33 +326,33 @@ InputCodes VTConverter::ToInputEnum(char *str, char &visual)
 			if (seqLen == 1 && curChar == 0x5B)
 			{
 				seqLen++;
-				code = Input_Escape;
+				k.code = Input_Escape;
 			}
 			else if (seqLen == 2)
 			{
 				switch (curChar)
 				{
 				case 0x46:
-					code = Input_End;
+					k.code = Input_End;
 					break;
 				case 0x48:
-					code = Input_Home;
+					k.code = Input_Home;
 					break;
 				case 0x41:
-					code = Input_CursorUp;
+					k.code = Input_CursorUp;
 					break;
 				case 0x42:
-					code = Input_CursorDown;
+					k.code = Input_CursorDown;
 					break;
 				case 0x43:
-					code = Input_CursorForward;
+					k.code = Input_CursorForward;
 					break;
 				case 0x44:
-					code = Input_CursorBackward;
+					k.code = Input_CursorBackward;
 					break;
 				case 0x33:
 					seqLen++;
-					code = Input_Escape;
+					k.code = Input_Escape;
 					break;
 				default:
 					break;
@@ -363,21 +362,20 @@ InputCodes VTConverter::ToInputEnum(char *str, char &visual)
 			{
 				if (curChar == 0x7E)
 				{
-					code = Input_Delete;
+					k.code = Input_Delete;
 				}
-				// else, keep code as unknown
 			}
 			// else, keep code as unknown
 		}
 	}
-	if ((code != Input_Unknown && code != Input_Escape))
+	if ((k.code != Input_Unknown && k.code != Input_Escape))
 	{
 		// refresh status variables if return code has been altered
 		seqLen = 0;
 		isEscapeSequence = false;
 	}
 
-	return code;
+	return k;
 }
 
 // End			1b 5b 46
