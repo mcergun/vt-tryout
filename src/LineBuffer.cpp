@@ -3,20 +3,12 @@
 
 LineBuffer::LineBuffer()
 {
-	// test code, remove it later
-	char line[1024];
-	strcpy(line, "Ahmet Mehmet");
-	CopyToLine(line, strlen(line));
-	HandleEnterKey();
-	strcpy(line, "Ayse Fatma");
-	CopyToLine(line, strlen(line));
-	curPos = 3;
 }
 
-int LineBuffer::HandleKey(InputCodes key)
+int LineBuffer::HandleKey(Key k)
 {
 	int ret = 0;
-	switch(key)
+	switch(k.code)
 	{
 	case Input_Escape:
 		// ret = HandleEscapeKey();
@@ -57,7 +49,7 @@ int LineBuffer::HandleKey(InputCodes key)
 	case Input_Numerical:
 	case Input_Letters:
 	case Input_SpecialSymbols:
-		ret = HandleVisualKey(0);
+		ret = HandleVisualKey(k.visual);
 		break;
 	}
 
@@ -179,8 +171,13 @@ int LineBuffer::HandleVisualKey(char vis)
 	// 012a3456789
 	// ....I.....
 	int ret = 0;
-	strcpy(line + curPos, line + curPos + 1);
-	line[curPos++] = vis;
+	if (curPos < lineLen)
+	{
+		strcpy(line + curPos, line + curPos + 1);
+	}
+	line[curPos] = vis;
+	curPos++;
+	lineLen++;
 
 	return ret;
 }

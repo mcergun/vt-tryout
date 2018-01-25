@@ -10,7 +10,7 @@ class LineBuffer
 {
 public:
 	LineBuffer();
-	int HandleKey(InputCodes key);
+	int HandleKey(Key k);
 	void GetLine(void *dst);
 private:
 	char line[MAX_LINELEN] = {0};
