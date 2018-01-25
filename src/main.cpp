@@ -64,7 +64,8 @@ int main()
 		{
 			if(read(0, buf, 1))
 			{
-				InputCodes code = conv.ToInputEnum(buf);
+				char curChar;
+				InputCodes code = conv.ToInputEnum(buf, curChar);
 				VTConverter::ToEnumString(enumStr, code);
 				switch (code)
 				{
@@ -87,7 +88,7 @@ int main()
 					printf("[%s]", enumStr);
 					break;
 				default:
-					printf("[%s, %s]", enumStr, buf);
+					printf("[%s, %c]", enumStr, curChar);
 					break;
 				}
 				fflush(0);

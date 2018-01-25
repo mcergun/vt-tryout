@@ -239,9 +239,11 @@ int VTConverter::ToAnsiiCode(char *str, EscapeCodes code)
 	return ret;
 }
 
-InputCodes VTConverter::ToInputEnum(char *str)
+InputCodes VTConverter::ToInputEnum(char *str, char &visual)
 {
 	InputCodes code = Input_Unknown;
+	visual = 0;
+	
 	int curLen = strlen(str);
 	for (int i = 0; i < curLen; ++i)
 	{
@@ -300,13 +302,20 @@ InputCodes VTConverter::ToInputEnum(char *str)
 				case 0x5c:
 				case 0x7c:
 					code = Input_SpecialSymbols;
+					visual = curChar;
 					break;
 				default:
 					if ((curChar >= 'a' && curChar <= 'z') ||
 					    (curChar >= 'A' && curChar <= 'Z'))
+					{
 						code = Input_Letters;
+						visual = curChar;
+					}
 					else if (curChar >= '0' && curChar <= '9')
+					{
 						code = Input_Numerical;
+						visual = curChar;visual = curChar;
+					}
 					// else, keep code as unknown
 					break;
 				}
