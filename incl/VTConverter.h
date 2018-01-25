@@ -64,7 +64,7 @@ public:
 // Test function, not actually needed in later stages
 static int ToEnumString(char *str, InputCodes code);	
 int ToAnsiiCode(char *str, EscapeCodes code);
-int ToInputEnum(InputCodes &code, char *str);
+InputCodes ToInputEnum(char *str);
 
 private:
 

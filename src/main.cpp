@@ -64,16 +64,15 @@ int main()
 		{
 			if(read(0, buf, 1))
 			{
-				InputCodes code;
-				int ret = conv.ToInputEnum(code, buf);
+				InputCodes code = conv.ToInputEnum(buf);
 				VTConverter::ToEnumString(enumStr, code);
 				switch (code)
 				{
 				case Input_Unknown:
-					printf("[U, %d]", ret);
+					printf("[U]");
 					break;
 				case Input_Escape:
-					printf("[E, %d]", ret);
+					printf("[E]");
 					break;
 				case Input_Delete:
 				case Input_End:
@@ -85,7 +84,7 @@ int main()
 				case Input_Enter:
 				case Input_Tab:
 				case Input_Backspace:
-					printf("[%s, %d]", enumStr, ret);
+					printf("[%s]", enumStr);
 					break;
 				default:
 					printf("[%s, %s]", enumStr, buf);

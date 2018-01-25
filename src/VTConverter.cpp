@@ -239,9 +239,9 @@ int VTConverter::ToAnsiiCode(char *str, EscapeCodes code)
 	return ret;
 }
 
-int VTConverter::ToInputEnum(InputCodes &code, char *str)
+InputCodes VTConverter::ToInputEnum(char *str)
 {
-	int ret = 0;
+	InputCodes code = Input_Unknown;
 	int curLen = strlen(str);
 	for (int i = 0; i < curLen; ++i)
 	{
@@ -307,8 +307,7 @@ int VTConverter::ToInputEnum(InputCodes &code, char *str)
 						code = Input_Letters;
 					else if (curChar >= '0' && curChar <= '9')
 						code = Input_Numerical;
-					else
-						ret = -1;
+					// else, keep code as unknown
 					break;
 				}
 			}
@@ -348,7 +347,6 @@ int VTConverter::ToInputEnum(InputCodes &code, char *str)
 					code = Input_Escape;
 					break;
 				default:
-					ret = -1;
 					break;
 				}
 			}
@@ -358,25 +356,19 @@ int VTConverter::ToInputEnum(InputCodes &code, char *str)
 				{
 					code = Input_Delete;
 				}
-				else
-				{
-					ret = -1;
-				}
+				// else, keep code as unknown
 			}
-			else
-			{
-				ret = -1;
-			}
+			// else, keep code as unknown
 		}
 	}
-	if ((code != Input_Unknown && code != Input_Escape) || ret != 0)
+	if ((code != Input_Unknown && code != Input_Escape))
 	{
 		// refresh status variables if return code has been altered
 		seqLen = 0;
 		isEscapeSequence = false;
 	}
 
-	return ret;
+	return code;
 }
 
 // End			1b 5b 46
