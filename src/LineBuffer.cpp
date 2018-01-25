@@ -13,31 +13,51 @@ LineBuffer::LineBuffer()
 	curPos = 3;
 }
 
-int LineBuffer::HandleKey(Keys key)
+int LineBuffer::HandleKey(InputCodes key)
 {
 	int ret = 0;
-	switch (key)
+	switch(key)
 	{
-	case KeyDelete:
+	case Input_Escape:
+		// ret = HandleEscapeKey();
+		break;
+	case Input_Unknown:
+		// ret = HandleUnknownKey();
+		break;
+	case Input_Delete:
 		ret = HandleDelKey();
 		break;
-	case KeyBackspace:
-		ret = HandleBackspaceKey();
+	case Input_End:
+		// ret = HandleEndKey();
 		break;
-	case KeyEnter:
-		ret = HandleEnterKey();
+	case Input_Home:
+		// ret = HandleHomeKey();
 		break;
-	case KeyUArrow:
+	case Input_CursorUp:
 		ret = HandleUpArrowKey();
 		break;
-	case KeyDArrow:
+	case Input_CursorDown:
 		ret = HandleDownArrowKey();
 		break;
-	case KeyRArrow:
+	case Input_CursorForward:
 		ret = HandleRightArrowKey();
 		break;
-	case KeyLArrow:
+	case Input_CursorBackward:
 		ret = HandleLeftArrowKey();
+		break;
+	case Input_Enter:
+		ret = HandleEnterKey();
+		break;
+	case Input_Tab:
+		// ret = HandleTabKey();
+		break;
+	case Input_Backspace:
+		ret = HandleBackspaceKey();
+		break;
+	case Input_Numerical:
+	case Input_Letters:
+	case Input_SpecialSymbols:
+		ret = HandleVisualKey(0);
 		break;
 	}
 
@@ -149,5 +169,18 @@ int LineBuffer::HandleLeftArrowKey()
 		curPos = 0;
 	}
 	
+	return ret;
+}
+
+int LineBuffer::HandleVisualKey(char vis)
+{
+	// 0123456789
+	// ...I......
+	// 012a3456789
+	// ....I.....
+	int ret = 0;
+	strcpy(line + curPos, line + curPos + 1);
+	line[curPos++] = vis;
+
 	return ret;
 }

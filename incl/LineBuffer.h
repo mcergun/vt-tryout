@@ -1,25 +1,16 @@
 #ifndef _LINE_BUFFER_
 #define _LINE_BUFFER_
 
+#include <VTConverter.h>
+
 static const int MAX_HISTORY = 10;
 static const int MAX_LINELEN = 1024;
-
-enum Keys
-{
-	KeyDelete,
-	KeyBackspace,
-	KeyEnter,
-	KeyRArrow,
-	KeyLArrow,
-	KeyUArrow,
-	KeyDArrow,
-};
 
 class LineBuffer
 {
 public:
 	LineBuffer();
-	int HandleKey(Keys key);
+	int HandleKey(InputCodes key);
 	void GetLine(void *dst);
 private:
 	char line[MAX_LINELEN] = {0};
@@ -37,6 +28,7 @@ private:
 	int HandleDownArrowKey();
 	int HandleRightArrowKey();
 	int HandleLeftArrowKey();
+	int HandleVisualKey(char vis);
 };
 
 #endif
