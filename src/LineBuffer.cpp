@@ -173,7 +173,9 @@ int LineBuffer::HandleVisualKey(char vis)
 	int ret = 0;
 	if (curPos < lineLen)
 	{
-		strcpy(line + curPos, line + curPos + 1);
+		// Use current history buffer as intermediate
+		strcpy(lineHistory[historyCount], line + curPos);
+		strcpy(line + curPos + 1, lineHistory[historyCount]);
 	}
 	line[curPos] = vis;
 	curPos++;
