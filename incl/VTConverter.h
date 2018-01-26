@@ -69,13 +69,15 @@ public:
 
 // Test function, not actually needed in later stages
 static int ToEnumString(char *str, InputCodes code);	
-int ToAnsiiCode(char *str, EscapeCodes code);
+int ToAnsiiCode(char *str, EscapeCodes code, int n = 0);
 Key ToKey(char *str);
 
 private:
 
 bool isEscapeSequence = false;
 int seqLen = 0;
+
+void custItoa(char * dst, int n);
 };
 
 //  Mnemonic        Command                 ASCII           HEX

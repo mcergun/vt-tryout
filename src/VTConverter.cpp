@@ -136,7 +136,7 @@ int VTConverter::ToEnumString(char *str, InputCodes code)
 //  PF2             App keypad PF2          esc O Q         1B 4F 51
 //  PF3             App keypad PF3          esc O R         1B 4F 52
 //  PF4             App keypad PF4          esc O S         1B 4F 53
-int VTConverter::ToAnsiiCode(char *str, EscapeCodes code)
+int VTConverter::ToAnsiiCode(char *str, EscapeCodes code, int n)
 {
 	int ret = 0;
 	switch(code)
@@ -378,9 +378,21 @@ Key VTConverter::ToKey(char *str)
 	return k;
 }
 
-// End			1b 5b 46
-// Home			1b 5b 48
-// Cursor Up		1b 5b 41
-// Cursor Down		1b 5b 42
-// Cursor Forward	1b 5b 43
-// Cursor Backward	1b 5b 44
+void VTConverter::custItoa(char * dst, int n)
+{
+	int ndigits = 0;
+	int num = n;
+	do
+	{
+		num /= 10;
+		ndigits++;
+	} while (n > 0);
+
+	dst[ndigits] = '\0';
+
+	do
+	{
+		dst[ndigits - 1] = n % 10;
+		ndigits--;
+	} while (ndigits > 0);
+}
