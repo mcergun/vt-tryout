@@ -61,6 +61,16 @@ void LineBuffer::GetLine(void *dst)
 	strcpy(reinterpret_cast<char *>(dst), line);
 }
 
+
+int LineBuffer::GetLineLen() const
+{
+	return lineLen;
+}
+int LineBuffer::GetCurPos() const
+{
+	return curPos;
+}
+
 void LineBuffer::CopyToLine(void *ptr, int len)
 {
 	strcpy(line, reinterpret_cast<char *>(ptr));

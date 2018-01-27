@@ -12,6 +12,8 @@ public:
 	LineBuffer();
 	int HandleKey(Key k);
 	void GetLine(void *dst);
+	int GetLineLen() const;
+	int GetCurPos() const;
 private:
 	char line[MAX_LINELEN] = {0};
 	char lineHistory[MAX_HISTORY][MAX_LINELEN];
