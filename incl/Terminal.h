@@ -20,7 +20,7 @@ private:
 	termios term, termOrig;
 	LineBuffer line;
 	VTConverter conv;
-	char buf[BUF_SIZE];
+	char buf[BUF_SIZE] = {0};
 	bool initialized = false;
 	int inputBuffer = 0;
 };

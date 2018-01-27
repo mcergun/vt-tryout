@@ -16,6 +16,7 @@ public:
 	int GetCurPos() const;
 private:
 	char line[MAX_LINELEN] = {0};
+	char lineIntmd[MAX_LINELEN] = {0};
 	char lineHistory[MAX_HISTORY][MAX_LINELEN];
 	int curPos = 0;
 	int lineLen = 0;

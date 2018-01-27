@@ -58,7 +58,9 @@ int LineBuffer::HandleKey(Key k)
 
 void LineBuffer::GetLine(void *dst)
 {
-	strcpy(reinterpret_cast<char *>(dst), line);
+	char *dstBuf = reinterpret_cast<char *>(dst);
+	strcpy(dstBuf, line);
+	dstBuf[lineLen] = '\0';
 }
 
 
@@ -88,6 +90,7 @@ int LineBuffer::HandleDelKey()
 	if (curPos < lineLen)
 	{
 		strcpy(line + curPos, line + curPos + 1);
+		lineLen--;
 	}
 	else
 	{
@@ -106,6 +109,7 @@ int LineBuffer::HandleBackspaceKey()
 	if (curPos > 0 && curPos < lineLen)
 	{
 		curPos--;
+		lineLen--;
 		strcpy(line + curPos, line + curPos + 1);
 	}
 	else
@@ -161,7 +165,7 @@ int LineBuffer::HandleRightArrowKey()
 int LineBuffer::HandleLeftArrowKey()
 {
 	int ret = 0;
-	if (curPos > 1)
+	if (curPos > 0)
 	{
 		curPos--;
 	}
@@ -183,9 +187,9 @@ int LineBuffer::HandleVisualKey(char vis)
 	int ret = 0;
 	if (curPos < lineLen)
 	{
-		// Use current history buffer as intermediate
-		strcpy(lineHistory[historyCount], line + curPos);
-		strcpy(line + curPos + 1, lineHistory[historyCount]);
+		memset(lineIntmd, 0, sizeof(lineIntmd));
+		strcpy(lineIntmd, line + curPos);
+		strcpy(line + curPos + 1, lineIntmd);
 	}
 	line[curPos] = vis;
 	curPos++;

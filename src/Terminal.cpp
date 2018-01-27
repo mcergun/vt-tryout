@@ -1,4 +1,6 @@
-#include <Terminal.h>
+#include <cstdio>
+#include <cstring>
+#include "Terminal.h"
 
 Terminal::Terminal()
 {
@@ -36,9 +38,52 @@ int Terminal::SetAttributes(termios *term, termios *termOrig)
 
 int Terminal::ReadBuf()
 {
+	memset(buf, 0, sizeof(buf));
 	int ret = read(0, buf, 1);
 	Key k = conv.ToKey(buf);
-	line.HandleKey(k);
+	if (k.InCode != Input_Escape || k.InCode != Input_Unknown)
+	{
+		if(!line.HandleKey(k))
+		{
+			char outBuf[16] = {0};
+			switch(k.OutCode)
+			{
+			case Output_NoAction:
+				break;
+			case Output_Visual:
+				// Print these
+				fputc(k.Visual, stdout);
+				fflush(stdout);
+				break;
+			case Output_Clear:
+			case Output_Refresh:
+			case Output_CursorUp:
+			case Output_CursorDown:
+			case Output_CursorForward:
+			case Output_CursorBackward:
+			case Output_Delete:
+			case Output_Backspace:
+			case Output_CursorStart:
+			case Output_CursorEnd:
+			case Output_SaveCursorPos:
+			case Output_RestoreCursorPos:
+			case Output_EraseDisplay:
+			case Output_EraseLine:
+			case Output_DeleteCharacter:
+			case Output_EraseCharacter:
+				conv.ToAnsiiCode(outBuf, k.OutCode, 1);
+				fputs(outBuf, stdout);
+				fflush(stdout);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	if (k.OutCode != Output_NoAction)
+	{
+		// Handle output related sh*t here
+	}
 	return ret;
 }
 

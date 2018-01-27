@@ -53,13 +53,7 @@ int main()
 	Terminal term;
 	while(1)
 	{
-		if(term.ReadBuf())
-		{
-			char line[1024];
-			term.GetLine(line);
-			printWFlush(line);
-		}
-		printWFlush("\n");
+		term.ReadBuf();
 	}
 	// termios term, termOrig;
 	// char buf[16] = {0};

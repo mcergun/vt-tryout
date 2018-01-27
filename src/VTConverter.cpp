@@ -139,48 +139,78 @@ int VTConverter::ToEnumString(char *str, InputCodes code)
 int VTConverter::ToAnsiiCode(char *str, OutputCodes code, int n)
 {
 	int ret = 0;
+	int len = 0;
 	switch(code)
 	{
 	case Output_CursorUp:
+		len = 3;
 		strcpy(str, "\x1B\x5B\x41");
 		break;
 	case Output_CursorDown:
+		len = 3;
 		strcpy(str, "\x1B\x5B\x42");
 		break;
 	case Output_CursorForward:
+		len = 3;
 		strcpy(str, "\x1B\x5B\x43");
 		break;
 	case Output_CursorBackward:
+		len = 3;
 		strcpy(str, "\x1B\x5B\x44");
 		break;
+	case Output_CursorStart:
+		len = 6;
+		strcpy(str, "\x1B\x5B""999\x44");
+		break;
+	case Output_CursorEnd:
+		len = 6;
+		strcpy(str, "\x1B\x5B""999\x43");
+		break;
+	case Output_Delete:
+		len = 3;
+		strcpy(str, "\x1B\x5B\x50");
+		break;
+	case Output_Backspace:
+		len = 6;
+		strcpy(str, "\x1B\x5B\x44" "\x1B\x5B\x50");
+		break;
 	case Output_SaveCursorPos:
+		len = 3;
 		strcpy(str, "\x1B\x5B\x73");
 		break;
 	case Output_RestoreCursorPos:
+		len = 3;
 		strcpy(str, "\x1B\x5B\x75");
 		break;
 	case Output_EraseDisplay:
+		len = 3;
 		strcpy(str, "\x1B\x5B\x32\x4A");
 		break;
 	case Output_EraseLine:
+		len = 3;
 		strcpy(str, "\x1B\x5B\x4B");
 		break;
 	case Output_DeleteCharacter:
+		len = 3;
 		strcpy(str, "\x1B\x5B\x50");
 		break;
 	case Output_EraseCharacter:
+		len = 3;
 		strcpy(str, "\x1B\x5B\x58");
 		break;
 	case Output_Clear:
 	case Output_Refresh:
+		len = 9;
 		// Move cursor back 999 times, then clear the line
 		strcpy(str, "\x1B\x5B" "999\x44" "\x1B\x5B\x4B");
 		break;
 	case Output_NoAction:
 	default:
+		len = 0;
 		ret = -1;
 		break;
 	}
+	str[len] = '\0';
 
 	return ret;
 }
@@ -251,6 +281,7 @@ Key VTConverter::ToKey(char *str)
 				case 0x7c:
 					k.InCode = Input_SpecialSymbols;
 					k.Visual = curChar;
+					k.OutCode = Output_Visual;
 					break;
 				default:
 					if ((curChar >= 'a' && curChar <= 'z') ||
@@ -258,11 +289,13 @@ Key VTConverter::ToKey(char *str)
 					{
 						k.InCode = Input_Letters;
 						k.Visual = curChar;
+						k.OutCode = Output_Visual;
 					}
 					else if (curChar >= '0' && curChar <= '9')
 					{
 						k.InCode = Input_Numerical;
 						k.Visual = curChar;
+						k.OutCode = Output_Visual;
 					}
 					// else, keep code as unknown
 					break;
