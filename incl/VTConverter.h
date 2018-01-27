@@ -20,47 +20,26 @@ enum InputCodes
 	Input_SpecialSymbols,
 };
 
-enum EscapeCodes
+enum OutputCodes
 {
-	// General input/output commands
-	Escape_CursorUp,
-	Escape_CursorDown,
-	Escape_CursorForward,
-	Escape_CursorBackward,
-	// Output commands
-	Escape_SaveCursorPos,
-	Escape_RestoreCursorPos,
-	Escape_EraseDisplay,
-	Escape_EraseLine,
-	Escape_DeleteCharacter,
-	Escape_EraseCharacter,
-	// Input commands
-	Escape_Delete,
-	Escape_Backspace,
-	Escape_Keypad0,
-	Escape_Keypad1,
-	Escape_Keypad2,
-	Escape_Keypad3,
-	Escape_Keypad4,
-	Escape_Keypad5,
-	Escape_Keypad6,
-	Escape_Keypad7,
-	Escape_Keypad8,
-	Escape_Keypad9,
-	Escape_Keypadminus,
-	Escape_Keypadcomma,
-	Escape_Keypadperiod,
-	Escape_KeypadEnter,
-	Escape_KeypadPF1,
-	Escape_KeypadPF2,
-	Escape_KeypadPF3,
-	Escape_KeypadPF4,
+	Output_Unknown,
+	Output_CursorUp,
+	Output_CursorDown,
+	Output_CursorForward,
+	Output_CursorBackward,
+	Output_SaveCursorPos,
+	Output_RestoreCursorPos,
+	Output_EraseDisplay,
+	Output_EraseLine,
+	Output_DeleteCharacter,
+	Output_EraseCharacter,
 };
 
 struct Key
 {
-	InputCodes code;
-	char visual;
+	InputCodes InCode;
+	OutputCodes OutCode;
+	char Visual;
 };
 
 class VTConverter
@@ -69,7 +48,7 @@ public:
 
 // Test function, not actually needed in later stages
 static int ToEnumString(char *str, InputCodes code);	
-int ToAnsiiCode(char *str, EscapeCodes code, int n = 0);
+int ToAnsiiCode(char *str, OutputCodes code, int n = 0);
 Key ToKey(char *str);
 
 private:

@@ -8,7 +8,7 @@ LineBuffer::LineBuffer()
 int LineBuffer::HandleKey(Key k)
 {
 	int ret = 0;
-	switch(k.code)
+	switch(k.InCode)
 	{
 	case Input_Escape:
 		// ret = HandleEscapeKey();
@@ -49,7 +49,7 @@ int LineBuffer::HandleKey(Key k)
 	case Input_Numerical:
 	case Input_Letters:
 	case Input_SpecialSymbols:
-		ret = HandleVisualKey(k.visual);
+		ret = HandleVisualKey(k.Visual);
 		break;
 	}
 

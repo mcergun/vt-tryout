@@ -136,101 +136,40 @@ int VTConverter::ToEnumString(char *str, InputCodes code)
 //  PF2             App keypad PF2          esc O Q         1B 4F 51
 //  PF3             App keypad PF3          esc O R         1B 4F 52
 //  PF4             App keypad PF4          esc O S         1B 4F 53
-int VTConverter::ToAnsiiCode(char *str, EscapeCodes code, int n)
+int VTConverter::ToAnsiiCode(char *str, OutputCodes code, int n)
 {
 	int ret = 0;
 	switch(code)
 	{
-	case Escape_CursorUp:
+	case Output_CursorUp:
 		strcpy(str, "\x1B\x5B\x41");
 		break;
-	case Escape_CursorDown:
+	case Output_CursorDown:
 		strcpy(str, "\x1B\x5B\x42");
 		break;
-	case Escape_CursorForward:
+	case Output_CursorForward:
 		strcpy(str, "\x1B\x5B\x43");
 		break;
-	case Escape_CursorBackward:
+	case Output_CursorBackward:
 		strcpy(str, "\x1B\x5B\x44");
 		break;
-	case Escape_SaveCursorPos:
+	case Output_SaveCursorPos:
 		strcpy(str, "\x1B\x5B\x73");
 		break;
-	case Escape_RestoreCursorPos:
+	case Output_RestoreCursorPos:
 		strcpy(str, "\x1B\x5B\x75");
 		break;
-	case Escape_EraseDisplay:
+	case Output_EraseDisplay:
 		strcpy(str, "\x1B\x5B\x32\x4A");
 		break;
-	case Escape_EraseLine:
+	case Output_EraseLine:
 		strcpy(str, "\x1B\x5B\x4B");
 		break;
-	case Escape_DeleteCharacter:
+	case Output_DeleteCharacter:
 		strcpy(str, "\x1B\x5B\x50");
 		break;
-	case Escape_EraseCharacter:
+	case Output_EraseCharacter:
 		strcpy(str, "\x1B\x5B\x58");
-		break;
-	case Escape_Delete:
-		strcpy(str, "\x7F");
-		break;
-	case Escape_Backspace:
-		strcpy(str, "\x08");
-		break;
-	case Escape_Keypad0:
-		strcpy(str, "\x1B\x4F\x70");
-		break;
-	case Escape_Keypad1:
-		strcpy(str, "\x1B\x4F\x71");
-		break;
-	case Escape_Keypad2:
-		strcpy(str, "\x1B\x4F\x72");
-		break;
-	case Escape_Keypad3:
-		strcpy(str, "\x1B\x4F\x73");
-		break;
-	case Escape_Keypad4:
-		strcpy(str, "\x1B\x4F\x74");
-		break;
-	case Escape_Keypad5:
-		strcpy(str, "\x1B\x4F\x75");
-		break;
-	case Escape_Keypad6:
-		strcpy(str, "\x1B\x4F\x76");
-		break;
-	case Escape_Keypad7:
-		strcpy(str, "\x1B\x4F\x77");
-		break;
-	case Escape_Keypad8:
-		strcpy(str, "\x1B\x4F\x78");
-		break;
-	case Escape_Keypad9:
-		strcpy(str, "\x1B\x4F\x79");
-		break;
-	case Escape_Keypadminus:
-		strcpy(str, "\x1B\x4F\x6D");
-		break;
-	case Escape_Keypadcomma:
-		strcpy(str, "\x1B\x4F\x6C");
-		break;
-	case Escape_Keypadperiod:
-		strcpy(str, "\x1B\x4F\x6E");
-		break;
-	case Escape_KeypadEnter:
-		strcpy(str, "\x1B\x4F\x4D");
-		break;
-	case Escape_KeypadPF1:
-		strcpy(str, "\x1B\x4F\x50");
-		break;
-	case Escape_KeypadPF2:
-		strcpy(str, "\x1B\x4F\x51");
-		break;
-	case Escape_KeypadPF3:
-		strcpy(str, "\x1B\x4F\x52");
-		break;
-	case Escape_KeypadPF4:
-		strcpy(str, "\x1B\x4F\x53");
-		break;
 	default:
 		ret = -1;
 		break;
@@ -241,7 +180,7 @@ int VTConverter::ToAnsiiCode(char *str, EscapeCodes code, int n)
 
 Key VTConverter::ToKey(char *str)
 {
-	Key k{Input_Unknown, 0};
+	Key k{Input_Unknown, Output_Unknown, 0};
 
 	int curLen = strlen(str);
 	for (int i = 0; i < curLen; ++i)
@@ -255,7 +194,7 @@ Key VTConverter::ToKey(char *str)
 				// should be followed by an escape sequence
 				isEscapeSequence = true;
 				seqLen++;
-				k.code = Input_Escape;
+				k.InCode = Input_Escape;
 			}
 			else
 			{
@@ -263,13 +202,13 @@ Key VTConverter::ToKey(char *str)
 				switch (curChar)
 				{
 				case 0x0a:
-					k.code = Input_Enter;
+					k.InCode = Input_Enter;
 					break;
 				case 0x09:
-					k.code = Input_Tab;
+					k.InCode = Input_Tab;
 					break;
 				case 0x7f:
-					k.code = Input_Backspace;
+					k.InCode = Input_Backspace;
 					break;
 				case 0x20:
 				case 0x2d:
@@ -300,20 +239,20 @@ Key VTConverter::ToKey(char *str)
 				case 0x7d:
 				case 0x5c:
 				case 0x7c:
-					k.code = Input_SpecialSymbols;
-					k.visual = curChar;
+					k.InCode = Input_SpecialSymbols;
+					k.Visual = curChar;
 					break;
 				default:
 					if ((curChar >= 'a' && curChar <= 'z') ||
 					    (curChar >= 'A' && curChar <= 'Z'))
 					{
-						k.code = Input_Letters;
-						k.visual = curChar;
+						k.InCode = Input_Letters;
+						k.Visual = curChar;
 					}
 					else if (curChar >= '0' && curChar <= '9')
 					{
-						k.code = Input_Numerical;
-						k.visual = curChar;
+						k.InCode = Input_Numerical;
+						k.Visual = curChar;
 					}
 					// else, keep code as unknown
 					break;
@@ -326,33 +265,33 @@ Key VTConverter::ToKey(char *str)
 			if (seqLen == 1 && curChar == 0x5B)
 			{
 				seqLen++;
-				k.code = Input_Escape;
+				k.InCode = Input_Escape;
 			}
 			else if (seqLen == 2)
 			{
 				switch (curChar)
 				{
 				case 0x46:
-					k.code = Input_End;
+					k.InCode = Input_End;
 					break;
 				case 0x48:
-					k.code = Input_Home;
+					k.InCode = Input_Home;
 					break;
 				case 0x41:
-					k.code = Input_CursorUp;
+					k.InCode = Input_CursorUp;
 					break;
 				case 0x42:
-					k.code = Input_CursorDown;
+					k.InCode = Input_CursorDown;
 					break;
 				case 0x43:
-					k.code = Input_CursorForward;
+					k.InCode = Input_CursorForward;
 					break;
 				case 0x44:
-					k.code = Input_CursorBackward;
+					k.InCode = Input_CursorBackward;
 					break;
 				case 0x33:
 					seqLen++;
-					k.code = Input_Escape;
+					k.InCode = Input_Escape;
 					break;
 				default:
 					break;
@@ -362,13 +301,13 @@ Key VTConverter::ToKey(char *str)
 			{
 				if (curChar == 0x7E)
 				{
-					k.code = Input_Delete;
+					k.InCode = Input_Delete;
 				}
 			}
 			// else, keep code as unknown
 		}
 	}
-	if ((k.code != Input_Unknown && k.code != Input_Escape))
+	if ((k.InCode != Input_Unknown && k.InCode != Input_Escape))
 	{
 		// refresh status variables if return code has been altered
 		seqLen = 0;
