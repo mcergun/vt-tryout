@@ -22,11 +22,18 @@ enum InputCodes
 
 enum OutputCodes
 {
-	Output_Unknown,
+	Output_NoAction,
+	Output_Clear,
+	Output_Refresh,
 	Output_CursorUp,
 	Output_CursorDown,
 	Output_CursorForward,
 	Output_CursorBackward,
+	Output_Delete,
+	Output_Backspace,
+	Output_CursorStart,
+	Output_CursorEnd,
+	// Not sure if next ones are going to be used
 	Output_SaveCursorPos,
 	Output_RestoreCursorPos,
 	Output_EraseDisplay,

@@ -170,6 +170,13 @@ int VTConverter::ToAnsiiCode(char *str, OutputCodes code, int n)
 		break;
 	case Output_EraseCharacter:
 		strcpy(str, "\x1B\x5B\x58");
+		break;
+	case Output_Clear:
+	case Output_Refresh:
+		// Move cursor back 999 times, then clear the line
+		strcpy(str, "\x1B\x5B" "999\x44" "\x1B\x5B\x4B");
+		break;
+	case Output_NoAction:
 	default:
 		ret = -1;
 		break;
@@ -180,7 +187,7 @@ int VTConverter::ToAnsiiCode(char *str, OutputCodes code, int n)
 
 Key VTConverter::ToKey(char *str)
 {
-	Key k{Input_Unknown, Output_Unknown, 0};
+	Key k{Input_Unknown, Output_NoAction, 0};
 
 	int curLen = strlen(str);
 	for (int i = 0; i < curLen; ++i)
@@ -203,12 +210,15 @@ Key VTConverter::ToKey(char *str)
 				{
 				case 0x0a:
 					k.InCode = Input_Enter;
+					k.OutCode = Output_Refresh;
 					break;
 				case 0x09:
 					k.InCode = Input_Tab;
+					k.OutCode = Output_Refresh;
 					break;
 				case 0x7f:
 					k.InCode = Input_Backspace;
+					k.OutCode = Output_Backspace;
 					break;
 				case 0x20:
 				case 0x2d:
@@ -273,21 +283,27 @@ Key VTConverter::ToKey(char *str)
 				{
 				case 0x46:
 					k.InCode = Input_End;
+					k.OutCode = Output_CursorEnd;
 					break;
 				case 0x48:
 					k.InCode = Input_Home;
+					k.OutCode = Output_CursorStart;
 					break;
 				case 0x41:
 					k.InCode = Input_CursorUp;
+					k.OutCode = Output_Refresh;
 					break;
 				case 0x42:
 					k.InCode = Input_CursorDown;
+					k.OutCode = Output_Refresh;
 					break;
 				case 0x43:
 					k.InCode = Input_CursorForward;
+					k.OutCode = Output_CursorForward;
 					break;
 				case 0x44:
 					k.InCode = Input_CursorBackward;
+					k.OutCode = Output_CursorBackward;
 					break;
 				case 0x33:
 					seqLen++;
@@ -302,6 +318,7 @@ Key VTConverter::ToKey(char *str)
 				if (curChar == 0x7E)
 				{
 					k.InCode = Input_Delete;
+					k.OutCode = Output_Delete;
 				}
 			}
 			// else, keep code as unknown
