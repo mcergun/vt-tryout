@@ -281,7 +281,7 @@ Key VTConverter::ToKey(char *str)
 				case 0x7c:
 					k.InCode = Input_SpecialSymbols;
 					k.Visual = curChar;
-					k.OutCode = Output_Visual;
+					k.OutCode = Output_Refresh;
 					break;
 				default:
 					if ((curChar >= 'a' && curChar <= 'z') ||
@@ -289,13 +289,13 @@ Key VTConverter::ToKey(char *str)
 					{
 						k.InCode = Input_Letters;
 						k.Visual = curChar;
-						k.OutCode = Output_Visual;
+						k.OutCode = Output_Refresh;
 					}
 					else if (curChar >= '0' && curChar <= '9')
 					{
 						k.InCode = Input_Numerical;
 						k.Visual = curChar;
-						k.OutCode = Output_Visual;
+						k.OutCode = Output_Refresh;
 					}
 					// else, keep code as unknown
 					break;

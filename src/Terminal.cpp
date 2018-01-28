@@ -41,6 +41,7 @@ int Terminal::ReadBuf()
 	memset(buf, 0, sizeof(buf));
 	int ret = read(0, buf, 1);
 	Key k = conv.ToKey(buf);
+	char lineBuf[MAX_LINELEN];
 	if (k.InCode != Input_Escape || k.InCode != Input_Unknown)
 	{
 		if(!line.HandleKey(k))
@@ -57,6 +58,19 @@ int Terminal::ReadBuf()
 				break;
 			case Output_Clear:
 			case Output_Refresh:
+				conv.ToAnsiiCode(outBuf, Output_Refresh, 1);
+				fputs(outBuf, stdout);
+				line.GetLine(lineBuf);
+				fputs(lineBuf, stdout);
+				conv.ToAnsiiCode(outBuf, Output_CursorStart, 1);
+				fputs(outBuf, stdout);
+				for (int i = 0; i < line.GetCurPos(); ++i)
+				{
+					conv.ToAnsiiCode(outBuf, Output_CursorForward, 1);
+					fputs(outBuf, stdout);
+				}
+				fflush(stdout);
+				break;
 			case Output_CursorUp:
 			case Output_CursorDown:
 			case Output_CursorForward:
