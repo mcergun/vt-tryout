@@ -21,6 +21,7 @@ private:
 	int curPos = 0;
 	int lineLen = 0;
 	int historyCount = 0;
+	int curHistory = 0;
 
 	void CopyToLine(void *ptr, int len);
 
@@ -31,6 +32,8 @@ private:
 	int HandleDownArrowKey();
 	int HandleRightArrowKey();
 	int HandleLeftArrowKey();
+	int HandleHomeKey();
+	int HandleEndKey();
 	int HandleVisualKey(char vis);
 };
 

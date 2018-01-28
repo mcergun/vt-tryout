@@ -20,10 +20,10 @@ int LineBuffer::HandleKey(Key k)
 		ret = HandleDelKey();
 		break;
 	case Input_End:
-		// ret = HandleEndKey();
+		ret = HandleEndKey();
 		break;
 	case Input_Home:
-		// ret = HandleHomeKey();
+		ret = HandleHomeKey();
 		break;
 	case Input_CursorUp:
 		ret = HandleUpArrowKey();
@@ -126,6 +126,7 @@ int LineBuffer::HandleEnterKey()
 	if (lineLen > 0 && strcmp(line, lineHistory[historyCount - 1]) != 0)
 	{
 		strcpy(lineHistory[historyCount++], line);
+		curHistory++;
 		memset(line, 0, MAX_LINELEN);
 		curPos = 0;
 	}
@@ -137,6 +138,17 @@ int LineBuffer::HandleUpArrowKey()
 {
 	int ret = 0;
 	// Copy last next history entry to line buffer
+	if (curHistory < 1)
+	{
+		ret = -1;
+	}
+	else
+	{
+		char *lastHistory = lineHistory[curHistory--];
+		strcpy(line, lastHistory);
+		lineLen = strlen(lastHistory);
+		curPos = lineLen;
+	}
 	return ret;
 }
 
@@ -175,6 +187,20 @@ int LineBuffer::HandleLeftArrowKey()
 		curPos = 0;
 	}
 	
+	return ret;
+}
+
+int LineBuffer::HandleHomeKey()
+{
+	int ret = 0;
+	curPos = 0;
+	return ret;
+}
+
+int LineBuffer::HandleEndKey()
+{
+	int ret = 0;
+	curPos = lineLen;
 	return ret;
 }
 
