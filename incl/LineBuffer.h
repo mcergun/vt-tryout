@@ -3,7 +3,7 @@
 
 #include <VTConverter.h>
 
-static const int MAX_HISTORY = 10;
+static const int MAX_HISTORY = 30;
 static const int MAX_LINELEN = 1024;
 
 class LineBuffer
@@ -35,6 +35,10 @@ private:
 	int HandleHomeKey();
 	int HandleEndKey();
 	int HandleVisualKey(char vis);
+
+	void ClearLine();
+	void CopyHistoryToLine(int idx);
+	void CopyLineToHistory();
 };
 
 #endif

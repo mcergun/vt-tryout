@@ -58,15 +58,15 @@ int Terminal::ReadBuf()
 				break;
 			case Output_Clear:
 			case Output_Refresh:
-				conv.ToAnsiiCode(outBuf, Output_Refresh, 1);
+				conv.ToAnsiiCode(outBuf, Output_Refresh);
 				fputs(outBuf, stdout);
 				line.GetLine(lineBuf);
 				fputs(lineBuf, stdout);
-				conv.ToAnsiiCode(outBuf, Output_CursorStart, 1);
+				conv.ToAnsiiCode(outBuf, Output_CursorStart);
 				fputs(outBuf, stdout);
 				for (int i = 0; i < line.GetCurPos(); ++i)
 				{
-					conv.ToAnsiiCode(outBuf, Output_CursorForward, 1);
+					conv.ToAnsiiCode(outBuf, Output_CursorForward);
 					fputs(outBuf, stdout);
 				}
 				fflush(stdout);
@@ -85,7 +85,7 @@ int Terminal::ReadBuf()
 			case Output_EraseLine:
 			case Output_DeleteCharacter:
 			case Output_EraseCharacter:
-				conv.ToAnsiiCode(outBuf, k.OutCode, 1);
+				conv.ToAnsiiCode(outBuf, k.OutCode);
 				fputs(outBuf, stdout);
 				fflush(stdout);
 				break;

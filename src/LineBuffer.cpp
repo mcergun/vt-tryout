@@ -106,7 +106,7 @@ int LineBuffer::HandleBackspaceKey()
 	// ...I......
 	// 013456789
 	int ret = 0;
-	if (curPos > 0 && curPos < lineLen)
+	if (curPos > 0 && curPos <= lineLen)
 	{
 		curPos--;
 		lineLen--;
@@ -123,12 +123,28 @@ int LineBuffer::HandleBackspaceKey()
 int LineBuffer::HandleEnterKey()
 {
 	int ret = 0;
-	if (lineLen > 0 && strcmp(line, lineHistory[historyCount - 1]) != 0)
+	if (lineLen > 0)
 	{
-		strcpy(lineHistory[historyCount++], line);
-		curHistory++;
-		memset(line, 0, MAX_LINELEN);
-		curPos = 0;
+		if (historyCount > 0)
+		{
+			// This may be a duplicate entry
+			if (strcmp(line, lineHistory[historyCount - 1]) != 0)
+			{
+				// Original entry, log it
+				CopyLineToHistory();
+				ClearLine();
+			}
+			else
+			{
+				// Duplicate entry, ignore it
+				ClearLine();
+			}
+		}
+		else
+		{
+			CopyLineToHistory();
+			ClearLine();
+		}
 	}
 
 	return ret;
@@ -141,13 +157,11 @@ int LineBuffer::HandleUpArrowKey()
 	if (curHistory < 1)
 	{
 		ret = -1;
+		curHistory = 0;
 	}
 	else
 	{
-		char *lastHistory = lineHistory[curHistory--];
-		strcpy(line, lastHistory);
-		lineLen = strlen(lastHistory);
-		curPos = lineLen;
+		CopyHistoryToLine(--curHistory);
 	}
 	return ret;
 }
@@ -155,7 +169,16 @@ int LineBuffer::HandleUpArrowKey()
 int LineBuffer::HandleDownArrowKey()
 {
 	int ret = 0;
-	// Copy last previous history entry to line buffer
+	// Copy last history entry to line buffer
+	if (curHistory < historyCount - 1)
+	{
+		CopyHistoryToLine(++curHistory);
+	}
+	else
+	{
+		curHistory = historyCount;
+		ClearLine();
+	}
 	return ret;
 }
 
@@ -222,4 +245,29 @@ int LineBuffer::HandleVisualKey(char vis)
 	lineLen++;
 
 	return ret;
+}
+
+void LineBuffer::ClearLine()
+{
+	memset(line, 0, MAX_LINELEN);
+	curPos = 0;
+	lineLen = 0;
+}
+
+void LineBuffer::CopyHistoryToLine(int idx)
+{
+	char *lastHistory = lineHistory[idx];
+	strcpy(line, lastHistory);
+	lineLen = strlen(lastHistory);
+	curPos = lineLen;
+}
+
+void LineBuffer::CopyLineToHistory()
+{
+	strcpy(lineHistory[historyCount], line);
+	if (historyCount == curHistory)
+	{
+		curHistory++;
+	}
+	historyCount++;
 }
