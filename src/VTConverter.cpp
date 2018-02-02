@@ -204,6 +204,10 @@ int VTConverter::ToAnsiiCode(char *str, OutputCodes code, int n)
 		// Move cursor back 999 times, then clear the line
 		strcpy(str, "\x1B\x5B" "999\x44" "\x1B\x5B\x4B");
 		break;
+	case Output_NLRefresh:
+		len = 6;
+		strcpy(str, "\x1B\x5B\x53\x1B\x5B\x45");
+		break;
 	case Output_NoAction:
 	default:
 		len = 0;
@@ -240,7 +244,7 @@ Key VTConverter::ToKey(char *str)
 				{
 				case 0x0a:
 					k.InCode = Input_Enter;
-					k.OutCode = Output_Refresh;
+					k.OutCode = Output_NLRefresh;
 					break;
 				case 0x09:
 					k.InCode = Input_Tab;

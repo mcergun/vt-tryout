@@ -25,6 +25,7 @@ enum OutputCodes
 	Output_NoAction,
 	Output_Clear,
 	Output_Refresh,
+	Output_NLRefresh,
 	Output_Visual,
 	Output_CursorUp,
 	Output_CursorDown,

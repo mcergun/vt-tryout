@@ -71,6 +71,7 @@ int Terminal::ReadBuf()
 				}
 				fflush(stdout);
 				break;
+			case Output_NLRefresh:
 			case Output_CursorUp:
 			case Output_CursorDown:
 			case Output_CursorForward:
