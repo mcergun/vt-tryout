@@ -5,6 +5,7 @@
 #include <termios.h>
 #include <LineBuffer.h>
 #include <VTConverter.h>
+#include <ICommChannel.h>
 
 static const int BUF_SIZE = 64;
 
@@ -12,17 +13,15 @@ class Terminal
 {
 public:
 	Terminal();
-	Terminal(int inBuf);
-	int SetAttributes(termios *term, termios *termOrig);
+	~Terminal();
 	int ReadBuf();
 	void GetLine(char *dst);
 private:
-	termios term, termOrig;
 	LineBuffer line;
 	VTConverter conv;
+	ICommChannel *channel = nullptr;
 	char buf[BUF_SIZE] = {0};
 	bool initialized = false;
-	int inputBuffer = 0;
 };
 
 #endif

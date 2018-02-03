@@ -1,47 +1,26 @@
-#include <cstdio>
 #include <cstring>
-#include "Terminal.h"
+#include <Terminal.h>
+#include <ConsoleComm.h>
 
 Terminal::Terminal()
 {
-	int ret = SetAttributes(&term, &termOrig);
-	initialized = !ret;
+	channel = new ConsoleComm();
+	initialized = !channel->Initialize();
 }
 
-Terminal::Terminal(int inBuf)
-	: inputBuffer(inBuf)
+Terminal::~Terminal()
 {
-	int ret = SetAttributes(&term, &termOrig);
-	initialized = !ret;
-}
-
-int Terminal::SetAttributes(termios *term, termios *termOrig)
-{
-	tcgetattr(0, term);
-	// save original state
-	*termOrig = *term;
-
-	// tcflag_t c_iflag;      /* input modes */
-	// tcflag_t c_oflag;      /* output modes */
-	// tcflag_t c_cflag;      /* control modes */ 
-	// tcflag_t c_lflag;      /* local modes */
-	// cc_t     c_cc[NCCS];   /* special characters */
-
-	term->c_lflag &= ~ICANON;
-	term->c_lflag &= ~ECHO;
-	term->c_cc[VMIN] = 1;
-	term->c_cc[VTIME] = 0;
-	// cfmakeraw(term);
-
-	return tcsetattr(0, TCSANOW, term);
+	delete channel;
+	channel = nullptr;
 }
 
 int Terminal::ReadBuf()
 {
 	memset(buf, 0, sizeof(buf));
-	int ret = read(0, buf, 1);
+	int ret = channel->Read(buf);
 	Key k = conv.ToKey(buf);
 	char lineBuf[MAX_LINELEN];
+	int outLen = 0;
 	if (k.InCode != Input_Escape || k.InCode != Input_Unknown)
 	{
 		if(!line.HandleKey(k))
@@ -49,27 +28,26 @@ int Terminal::ReadBuf()
 			char outBuf[16] = {0};
 			switch(k.OutCode)
 			{
-			case Output_NoAction:
-				break;
 			case Output_Visual:
 				// Print these
-				fputc(k.Visual, stdout);
-				fflush(stdout);
+				channel->Write(&(k.Visual), 1);
+				channel->FlushBuffers();
 				break;
 			case Output_Clear:
 			case Output_Refresh:
-				conv.ToAnsiiCode(outBuf, Output_Refresh);
-				fputs(outBuf, stdout);
+				outLen = conv.ToAnsiiCode(outBuf, Output_Refresh);
+				channel->Write(outBuf, outLen);
 				line.GetLine(lineBuf);
-				fputs(lineBuf, stdout);
-				conv.ToAnsiiCode(outBuf, Output_CursorStart);
-				fputs(outBuf, stdout);
+				channel->Write(lineBuf, line.GetLineLen());
+				outLen = conv.ToAnsiiCode(outBuf, Output_CursorStart);
+				channel->Write(outBuf, outLen);
 				for (int i = 0; i < line.GetCurPos(); ++i)
 				{
-					conv.ToAnsiiCode(outBuf, Output_CursorForward);
-					fputs(outBuf, stdout);
+					outLen = conv.ToAnsiiCode(outBuf, 
+						Output_CursorForward);
+					channel->Write(outBuf, outLen);
 				}
-				fflush(stdout);
+				channel->FlushBuffers();
 				break;
 			case Output_NLRefresh:
 			case Output_CursorUp:
@@ -86,10 +64,11 @@ int Terminal::ReadBuf()
 			case Output_EraseLine:
 			case Output_DeleteCharacter:
 			case Output_EraseCharacter:
-				conv.ToAnsiiCode(outBuf, k.OutCode);
-				fputs(outBuf, stdout);
-				fflush(stdout);
+				outLen = conv.ToAnsiiCode(outBuf, k.OutCode);
+				channel->Write(outBuf, outLen);
+				channel->FlushBuffers();
 				break;
+			case Output_NoAction:
 			default:
 				break;
 			}

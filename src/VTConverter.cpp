@@ -138,7 +138,6 @@ int VTConverter::ToEnumString(char *str, InputCodes code)
 //  PF4             App keypad PF4          esc O S         1B 4F 53
 int VTConverter::ToAnsiiCode(char *str, OutputCodes code, int n)
 {
-	int ret = 0;
 	int len = 0;
 	switch(code)
 	{
@@ -210,13 +209,13 @@ int VTConverter::ToAnsiiCode(char *str, OutputCodes code, int n)
 		break;
 	case Output_NoAction:
 	default:
-		len = 0;
-		ret = -1;
+		len = -1;
 		break;
 	}
-	str[len] = '\0';
+	if (len >= 0)
+		str[len] = '\0';
 
-	return ret;
+	return len;
 }
 
 Key VTConverter::ToKey(char *str)
