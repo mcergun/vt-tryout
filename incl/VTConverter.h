@@ -44,12 +44,12 @@ enum OutputCodes
 	Output_EraseCharacter,
 };
 
-struct Key
-{
-	InputCodes InCode;
-	OutputCodes OutCode;
-	char Visual;
-};
+// struct Key
+// {
+// 	InputCodes InCode;
+// 	OutputCodes OutCode;
+// 	char Visual;
+// };
 
 class VTConverter
 {
@@ -57,8 +57,8 @@ public:
 
 // Test function, not actually needed in later stages
 static int ToEnumString(char *str, InputCodes code);	
-int ToAnsiiCode(char *str, OutputCodes code, int n = 0);
-Key ToKey(char *str);
+static const char * ToAnsiiCode(OutputCodes code);
+// Key ToKey(char *str);
 
 private:
 

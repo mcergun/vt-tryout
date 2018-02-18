@@ -9,7 +9,7 @@ class ConsoleComm : public ICommChannel
 public:
 	int Initialize();
 	int Read(void *buf);
-	int Write(void *buf, int len);
+	int Write(const char *buf, int len);
 	void FlushBuffers();
 
 private:

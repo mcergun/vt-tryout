@@ -25,6 +25,12 @@ Key:
 Line:
 	$(CC) -o obj/Line.o -c src/LineBuffer.cpp $(CFLAGS)
 
+OutputChannel:
+	$(CC) -o obj/OutputChannel.o -c src/OutputChannel.cpp $(CFLAGS)
+
+VTConverter:
+	$(CC) -o obj/VTConverter.o -c src/VTConverter.cpp $(CFLAGS)
+
 clean:
 	rm -rf obj/*
 	rm -rf bin/*

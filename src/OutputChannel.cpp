@@ -1,8 +1,18 @@
 #include <cstdio>
 #include <unistd.h>
-#include <ConsoleComm.h>
+#include <OutputChannel.h>
 
-int ConsoleComm::Initialize()
+OutputChannel::OutputChannel()
+{
+
+}
+
+OutputChannel::~OutputChannel()
+{
+
+}
+
+int OutputChannel::Initialize()
 {
 	// Get attributes from stdout
 	tcgetattr(0, &term);
@@ -25,26 +35,28 @@ int ConsoleComm::Initialize()
 	return tcsetattr(0, TCSANOW, &term);
 }
 
-int ConsoleComm::Read(void *buf)
+int OutputChannel::Read(void *buf)
 {
 	return read(0, buf, 1);
 }
 
-int ConsoleComm::Write(const char *buf, int len)
+int OutputChannel::Write(void *buf, int len)
 {
+	int ret = 0;
+	char *cbuf = reinterpret_cast<char *>(buf);
 	if (len > 0)
 	{
-		ret = fputs(buf, stdout);
+		ret = fputs(cbuf, stdout);
 	}
 	else
 	{
-		ret = fputc(*buf, stdout);
+		ret = fputc(*cbuf, stdout);
 	}
 
 	return ret;
 }
 
-void ConsoleComm::FlushBuffers()
+void OutputChannel::FlushBuffers()
 {
 	fflush(stdout);
 }

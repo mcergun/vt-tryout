@@ -6,6 +6,24 @@ Line::Line()
 
 }
 
+Line& Line::operator=(Line &ln)
+{
+	memcpy(this->lineBuf, ln.lineBuf, MAX_LINE_LEN);
+	this->lineLen = ln.lineLen;
+	this->curPos = ln.lineLen;
+	return *this;
+}
+
+bool Line::operator==(Line &ln)
+{
+	return !strcmp(this->lineBuf, ln.lineBuf);
+}
+
+bool Line::operator!=(Line &ln)
+{
+	return !operator==(ln);
+}
+
 int Line::MoveCursorLeft(int count)
 {
 	int ret = 0;
@@ -90,6 +108,55 @@ int Line::Erase(int len)
 	return 0;
 }
 
+LineBuffer::LineBuffer()
+{
+
+}
+
+int LineBuffer::AddToHistory(Line &ln)
+{
+	int ret = 0;
+	if (historyCnt < MAX_HISTORY_CNT)
+	{
+		if (history[historyCnt] != ln)
+			history[historyCnt++] = ln;
+	}
+	else
+	{
+		ret = -1;
+	}
+
+	return ret;
+}
+
+int LineBuffer::GetNextFromHistory(Line &ln)
+{
+	int ret = 0;
+	if (curHistory < 1)
+	{
+		ret = -1;
+		curHistory = 0;
+	}
+	else
+	{
+		ln = history[--curHistory];
+	}
+	return ret;
+}
+
+int LineBuffer::GetPrevFromHistory(Line &ln)
+{
+	int ret = 0;
+	if (curHistory < historyCnt - 1)
+	{
+		ln = history[++curHistory];
+	}
+	else
+	{
+		curHistory = historyCnt;
+	}
+	return ret;
+}
 
 // LineBuffer::LineBuffer()
 // {

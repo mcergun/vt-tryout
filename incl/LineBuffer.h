@@ -6,6 +6,9 @@ class Line
 public:
 	static const int MAX_LINE_LEN = 1024;
 	Line();
+	Line& operator=(Line &ln);
+	bool operator==(Line &ln);
+	bool operator!=(Line &ln);
 	int MoveCursorLeft(int count = 1);
 	int MoveCursorRight(int count = 1);
 	int MoveCursorToHome();
@@ -27,7 +30,15 @@ private:
 class LineBuffer
 {
 public:
+	static const int MAX_HISTORY_CNT = 64;
+	LineBuffer();
+	int AddToHistory(Line &ln);
+	int GetNextFromHistory(Line &ln);
+	int GetPrevFromHistory(Line &ln);
 private:
+	Line history[MAX_HISTORY_CNT];
+	int historyCnt = 0;
+	int curHistory = 0;
 };
 
 #endif

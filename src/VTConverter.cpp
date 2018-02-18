@@ -136,239 +136,220 @@ int VTConverter::ToEnumString(char *str, InputCodes code)
 //  PF2             App keypad PF2          esc O Q         1B 4F 51
 //  PF3             App keypad PF3          esc O R         1B 4F 52
 //  PF4             App keypad PF4          esc O S         1B 4F 53
-int VTConverter::ToAnsiiCode(char *str, OutputCodes code, int n)
+const char * VTConverter::ToAnsiiCode(OutputCodes code)
 {
-	int len = 0;
+	const char *ret = nullptr;
 	switch(code)
 	{
 	case Output_CursorUp:
-		len = 3;
-		strcpy(str, "\x1B\x5B\x41");
+		ret = "\x1B\x5B\x41";
 		break;
 	case Output_CursorDown:
-		len = 3;
-		strcpy(str, "\x1B\x5B\x42");
+		ret = "\x1B\x5B\x42";
 		break;
 	case Output_CursorForward:
-		len = 3;
-		strcpy(str, "\x1B\x5B\x43");
+		ret = "\x1B\x5B\x43";
 		break;
 	case Output_CursorBackward:
-		len = 3;
-		strcpy(str, "\x1B\x5B\x44");
+		ret = "\x1B\x5B\x44";
 		break;
 	case Output_CursorStart:
-		len = 6;
-		strcpy(str, "\x1B\x5B""999\x44");
+		ret = "\x1B\x5B""999\x44";
 		break;
 	case Output_CursorEnd:
-		len = 6;
-		strcpy(str, "\x1B\x5B""999\x43");
+		ret = "\x1B\x5B""999\x43";
 		break;
 	case Output_Delete:
-		len = 3;
-		strcpy(str, "\x1B\x5B\x50");
+		ret = "\x1B\x5B\x50";
 		break;
 	case Output_Backspace:
-		len = 6;
-		strcpy(str, "\x1B\x5B\x44" "\x1B\x5B\x50");
+		ret = "\x1B\x5B\x44" "\x1B\x5B\x50";
 		break;
 	case Output_SaveCursorPos:
-		len = 3;
-		strcpy(str, "\x1B\x5B\x73");
+		ret = "\x1B\x5B\x73";
 		break;
 	case Output_RestoreCursorPos:
-		len = 3;
-		strcpy(str, "\x1B\x5B\x75");
+		ret = "\x1B\x5B\x75";
 		break;
 	case Output_EraseDisplay:
-		len = 3;
-		strcpy(str, "\x1B\x5B\x32\x4A");
+		ret = "\x1B\x5B\x32\x4A";
 		break;
 	case Output_EraseLine:
-		len = 3;
-		strcpy(str, "\x1B\x5B\x4B");
+		ret = "\x1B\x5B\x4B";
 		break;
 	case Output_DeleteCharacter:
-		len = 3;
-		strcpy(str, "\x1B\x5B\x50");
+		ret = "\x1B\x5B\x50";
 		break;
 	case Output_EraseCharacter:
-		len = 3;
-		strcpy(str, "\x1B\x5B\x58");
+		ret = "\x1B\x5B\x58";
 		break;
 	case Output_Clear:
 	case Output_Refresh:
-		len = 9;
 		// Move cursor back 999 times, then clear the line
-		strcpy(str, "\x1B\x5B" "999\x44" "\x1B\x5B\x4B");
+		ret = "\x1B\x5B" "999\x44" "\x1B\x5B\x4B";
 		break;
 	case Output_NLRefresh:
-		len = 6;
-		strcpy(str, "\x1B\x5B\x53\x1B\x5B\x45");
+		ret = "\x1B\x5B\x53\x1B\x5B\x45";
 		break;
 	case Output_NoAction:
 	default:
-		len = -1;
 		break;
 	}
-	if (len >= 0)
-		str[len] = '\0';
 
-	return len;
+	return ret;
 }
 
-Key VTConverter::ToKey(char *str)
-{
-	Key k{Input_Unknown, Output_NoAction, 0};
+// Key VTConverter::ToKey(char *str)
+// {
+// 	Key k{Input_Unknown, Output_NoAction, 0};
 
-	int curLen = strlen(str);
-	for (int i = 0; i < curLen; ++i)
-	{
-		char curChar = str[i];
+// 	int curLen = strlen(str);
+// 	for (int i = 0; i < curLen; ++i)
+// 	{
+// 		char curChar = str[i];
 
-		if (!isEscapeSequence)
-		{
-			if (curChar == 0x1B)
-			{
-				// should be followed by an escape sequence
-				isEscapeSequence = true;
-				seqLen++;
-				k.InCode = Input_Escape;
-			}
-			else
-			{
-				// should be a visual character
-				switch (curChar)
-				{
-				case 0x0a:
-					k.InCode = Input_Enter;
-					k.OutCode = Output_NLRefresh;
-					break;
-				case 0x09:
-					k.InCode = Input_Tab;
-					k.OutCode = Output_Refresh;
-					break;
-				case 0x7f:
-					k.InCode = Input_Backspace;
-					k.OutCode = Output_Backspace;
-					break;
-				case 0x20:
-				case 0x2d:
-				case 0x2b:
-				case 0x2a:
-				case 0x2f:
-				case 0x2e:
-				case 0x2c:
-				case 0x27:
-				case 0x22:
-				case 0x3b:
-				case 0x3a:
-				case 0x3c:
-				case 0x3e:
-				case 0x3f:
-				case 0x7e:
-				case 0x21:
-				case 0x40:
-				case 0x23:
-				case 0x24:
-				case 0x25:
-				case 0x5e:
-				case 0x26:
-				case 0x28:
-				case 0x29:
-				case 0x5f:
-				case 0x7b:
-				case 0x7d:
-				case 0x5c:
-				case 0x7c:
-					k.InCode = Input_SpecialSymbols;
-					k.Visual = curChar;
-					k.OutCode = Output_Refresh;
-					break;
-				default:
-					if ((curChar >= 'a' && curChar <= 'z') ||
-					    (curChar >= 'A' && curChar <= 'Z'))
-					{
-						k.InCode = Input_Letters;
-						k.Visual = curChar;
-						k.OutCode = Output_Refresh;
-					}
-					else if (curChar >= '0' && curChar <= '9')
-					{
-						k.InCode = Input_Numerical;
-						k.Visual = curChar;
-						k.OutCode = Output_Refresh;
-					}
-					// else, keep code as unknown
-					break;
-				}
-			}
-		}
-		else
-		{
-			// continue checking characters for incoming parts
-			if (seqLen == 1 && curChar == 0x5B)
-			{
-				seqLen++;
-				k.InCode = Input_Escape;
-			}
-			else if (seqLen == 2)
-			{
-				switch (curChar)
-				{
-				case 0x46:
-					k.InCode = Input_End;
-					k.OutCode = Output_CursorEnd;
-					break;
-				case 0x48:
-					k.InCode = Input_Home;
-					k.OutCode = Output_CursorStart;
-					break;
-				case 0x41:
-					k.InCode = Input_CursorUp;
-					k.OutCode = Output_Refresh;
-					break;
-				case 0x42:
-					k.InCode = Input_CursorDown;
-					k.OutCode = Output_Refresh;
-					break;
-				case 0x43:
-					k.InCode = Input_CursorForward;
-					k.OutCode = Output_CursorForward;
-					break;
-				case 0x44:
-					k.InCode = Input_CursorBackward;
-					k.OutCode = Output_CursorBackward;
-					break;
-				case 0x33:
-					seqLen++;
-					k.InCode = Input_Escape;
-					break;
-				default:
-					break;
-				}
-			}
-			else if (seqLen == 3)
-			{
-				if (curChar == 0x7E)
-				{
-					k.InCode = Input_Delete;
-					k.OutCode = Output_Delete;
-				}
-			}
-			// else, keep code as unknown
-		}
-	}
-	if ((k.InCode != Input_Unknown && k.InCode != Input_Escape))
-	{
-		// refresh status variables if return code has been altered
-		seqLen = 0;
-		isEscapeSequence = false;
-	}
+// 		if (!isEscapeSequence)
+// 		{
+// 			if (curChar == 0x1B)
+// 			{
+// 				// should be followed by an escape sequence
+// 				isEscapeSequence = true;
+// 				seqLen++;
+// 				k.InCode = Input_Escape;
+// 			}
+// 			else
+// 			{
+// 				// should be a visual character
+// 				switch (curChar)
+// 				{
+// 				case 0x0a:
+// 					k.InCode = Input_Enter;
+// 					k.OutCode = Output_NLRefresh;
+// 					break;
+// 				case 0x09:
+// 					k.InCode = Input_Tab;
+// 					k.OutCode = Output_Refresh;
+// 					break;
+// 				case 0x7f:
+// 					k.InCode = Input_Backspace;
+// 					k.OutCode = Output_Backspace;
+// 					break;
+// 				case 0x20:
+// 				case 0x2d:
+// 				case 0x2b:
+// 				case 0x2a:
+// 				case 0x2f:
+// 				case 0x2e:
+// 				case 0x2c:
+// 				case 0x27:
+// 				case 0x22:
+// 				case 0x3b:
+// 				case 0x3a:
+// 				case 0x3c:
+// 				case 0x3e:
+// 				case 0x3f:
+// 				case 0x7e:
+// 				case 0x21:
+// 				case 0x40:
+// 				case 0x23:
+// 				case 0x24:
+// 				case 0x25:
+// 				case 0x5e:
+// 				case 0x26:
+// 				case 0x28:
+// 				case 0x29:
+// 				case 0x5f:
+// 				case 0x7b:
+// 				case 0x7d:
+// 				case 0x5c:
+// 				case 0x7c:
+// 					k.InCode = Input_SpecialSymbols;
+// 					k.Visual = curChar;
+// 					k.OutCode = Output_Refresh;
+// 					break;
+// 				default:
+// 					if ((curChar >= 'a' && curChar <= 'z') ||
+// 					    (curChar >= 'A' && curChar <= 'Z'))
+// 					{
+// 						k.InCode = Input_Letters;
+// 						k.Visual = curChar;
+// 						k.OutCode = Output_Refresh;
+// 					}
+// 					else if (curChar >= '0' && curChar <= '9')
+// 					{
+// 						k.InCode = Input_Numerical;
+// 						k.Visual = curChar;
+// 						k.OutCode = Output_Refresh;
+// 					}
+// 					// else, keep code as unknown
+// 					break;
+// 				}
+// 			}
+// 		}
+// 		else
+// 		{
+// 			// continue checking characters for incoming parts
+// 			if (seqLen == 1 && curChar == 0x5B)
+// 			{
+// 				seqLen++;
+// 				k.InCode = Input_Escape;
+// 			}
+// 			else if (seqLen == 2)
+// 			{
+// 				switch (curChar)
+// 				{
+// 				case 0x46:
+// 					k.InCode = Input_End;
+// 					k.OutCode = Output_CursorEnd;
+// 					break;
+// 				case 0x48:
+// 					k.InCode = Input_Home;
+// 					k.OutCode = Output_CursorStart;
+// 					break;
+// 				case 0x41:
+// 					k.InCode = Input_CursorUp;
+// 					k.OutCode = Output_Refresh;
+// 					break;
+// 				case 0x42:
+// 					k.InCode = Input_CursorDown;
+// 					k.OutCode = Output_Refresh;
+// 					break;
+// 				case 0x43:
+// 					k.InCode = Input_CursorForward;
+// 					k.OutCode = Output_CursorForward;
+// 					break;
+// 				case 0x44:
+// 					k.InCode = Input_CursorBackward;
+// 					k.OutCode = Output_CursorBackward;
+// 					break;
+// 				case 0x33:
+// 					seqLen++;
+// 					k.InCode = Input_Escape;
+// 					break;
+// 				default:
+// 					break;
+// 				}
+// 			}
+// 			else if (seqLen == 3)
+// 			{
+// 				if (curChar == 0x7E)
+// 				{
+// 					k.InCode = Input_Delete;
+// 					k.OutCode = Output_Delete;
+// 				}
+// 			}
+// 			// else, keep code as unknown
+// 		}
+// 	}
+// 	if ((k.InCode != Input_Unknown && k.InCode != Input_Escape))
+// 	{
+// 		// refresh status variables if return code has been altered
+// 		seqLen = 0;
+// 		isEscapeSequence = false;
+// 	}
 
-	return k;
-}
+// 	return k;
+// }
 
 void VTConverter::custItoa(char * dst, int n)
 {
