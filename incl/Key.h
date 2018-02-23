@@ -15,45 +15,44 @@ public:
 class Key : public KeyCommand
 {
 public:
-	static const int MAX_SEQ_LEN = 16;
 	virtual ~Key() {};
-	Key(const char *c);
+	Key(char c);
 protected:
-	char outCode[MAX_SEQ_LEN];
+	char visual;
 };
 
 class KeyReturn : public Key
 {
 public:
-	KeyReturn() : Key(VTConverter::ToAnsiiCode(Output_NLRefresh)) {};
+	KeyReturn() : Key('\0') {}
 	int Execute(LineBuffer &lb, OutputChannel &oc);
 };
 
 class KeyUpArrow : public Key
 {
 public:
-	KeyUpArrow();
+	KeyUpArrow() : Key('\0') {}
 	int Execute(LineBuffer &lb, OutputChannel &oc);
 };
 
 class KeyDownArrow : public Key
 {
 public:
-	KeyDownArrow();
+	KeyDownArrow() : Key('\0') {}
 	int Execute(LineBuffer &lb, OutputChannel &oc);
 };
 
 class KeyLeftArrow : public Key
 {
 public:
-	KeyLeftArrow();
+	KeyLeftArrow() : Key('\0') {}
 	int Execute(LineBuffer &lb, OutputChannel &oc);
 };
 
 class KeyRightrrow : public Key
 {
 public:
-	KeyRightrrow();
+	KeyRightrrow() : Key('\0') {}
 	int Execute(LineBuffer &lb, OutputChannel &oc);
 };
 

@@ -19,6 +19,8 @@ CFLAGS = -Iincl -Wall -g
 # VTConverter:
 # 	$(CC) -o obj/VTConverter.o -c src/VTConverter.cpp $(CFLAGS)
 
+all: Key Line OutputChannel
+
 Key:
 	$(CC) -o obj/Key.o -c src/Key.cpp $(CFLAGS)
 
@@ -27,9 +29,6 @@ Line:
 
 OutputChannel:
 	$(CC) -o obj/OutputChannel.o -c src/OutputChannel.cpp $(CFLAGS)
-
-VTConverter:
-	$(CC) -o obj/VTConverter.o -c src/VTConverter.cpp $(CFLAGS)
 
 clean:
 	rm -rf obj/*
