@@ -6,11 +6,9 @@ Line::Line()
 
 }
 
-Line& Line::operator=(Line &ln)
+Line& Line::operator=(const Line &ln)
 {
-	memcpy(this->lineBuf, ln.lineBuf, MAX_LINE_LEN);
-	this->lineLen = ln.lineLen;
-	this->curPos = ln.lineLen;
+	Replace(ln);
 	return *this;
 }
 
@@ -22,6 +20,11 @@ bool Line::operator==(Line &ln)
 bool Line::operator!=(Line &ln)
 {
 	return !operator==(ln);
+}
+
+const char * Line::GetStringContent()
+{
+	return const_cast<const char *>(lineBuf);
 }
 
 int Line::MoveCursorLeft(int count)
@@ -108,9 +111,45 @@ int Line::Erase(int len)
 	return 0;
 }
 
+int Line::Replace(const char *str)
+{
+	strcpy(this->lineBuf, str);
+	return 0;
+}
+
+int Line::Replace(const Line &ln)
+{
+	memcpy(this->lineBuf, ln.lineBuf, MAX_LINE_LEN);
+	memcpy(this->lineIntmdBuf, ln.lineIntmdBuf, MAX_LINE_LEN);
+	this->lineLen = ln.lineLen;
+	this->curPos = ln.lineLen;
+	return 0;
+}
+
 LineBuffer::LineBuffer()
 {
 
+}
+
+Line & LineBuffer::GetCurrentLine()
+{
+	return currentLine;
+}
+
+int LineBuffer::AddToHistory()
+{
+	int ret = 0;
+	if (historyCnt < MAX_HISTORY_CNT)
+	{
+		if (history[historyCnt] != currentLine)
+			history[historyCnt++] = currentLine;
+	}
+	else
+	{
+		ret = -1;
+	}
+
+	return ret;
 }
 
 int LineBuffer::AddToHistory(Line &ln)
