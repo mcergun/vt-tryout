@@ -51,3 +51,11 @@ int KeyRightrrow::Execute(LineBuffer &lb, OutputChannel &oc)
 	ret = oc.MoveCursorRight();
 	return ret;
 }
+
+int KeyVisual::Execute(LineBuffer &lb, OutputChannel &oc)
+{
+	int ret = 0;
+	ret = lb.GetCurrentLine().Insert(this->visual);
+	ret = oc.InsertChar(this->visual);
+	return ret;
+}

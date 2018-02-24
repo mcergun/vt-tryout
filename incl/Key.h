@@ -3,7 +3,6 @@
 
 #include <LineBuffer.h>
 #include <OutputChannel.h>
-#include <VTConverter.h>
 
 class KeyCommand
 {
@@ -54,6 +53,15 @@ class KeyRightrrow : public Key
 public:
 	KeyRightrrow() : Key('\0') {}
 	int Execute(LineBuffer &lb, OutputChannel &oc);
+};
+
+class KeyVisual : public Key
+{
+public:
+	KeyVisual(char vis) : Key(vis) {}
+	int Execute(LineBuffer &lb, OutputChannel &oc);
+private:
+	KeyVisual();
 };
 
 #endif
