@@ -16,8 +16,34 @@ class Key : public KeyCommand
 public:
 	virtual ~Key() {};
 	Key(char c);
-protected:
 	char visual;
+};
+
+class KeyConverter
+{
+public:
+	KeyConverter();
+	Key & ToKey(const char *str);
+private:
+	static constexpr int UNIQ_KEY_COUNT = 8;
+	static constexpr unsigned char CODE_ESC_START = 0x1B;
+	Key *keyList[UNIQ_KEY_COUNT];
+	bool isEscapeSequence = false;
+	int seqLen = 0;
+};
+
+class KeyIgnore : public Key
+{
+public:
+	KeyIgnore() : Key('\0') {}
+	int Execute(LineBuffer &lb, OutputChannel &oc) { return 0;}
+};
+
+class KeyEscape : public Key
+{
+public:
+	KeyEscape() : Key('\0') {}
+	int Execute(LineBuffer &lb, OutputChannel &oc) { return 0;}
 };
 
 class KeyReturn : public Key
@@ -48,10 +74,10 @@ public:
 	int Execute(LineBuffer &lb, OutputChannel &oc);
 };
 
-class KeyRightrrow : public Key
+class KeyRightArrow : public Key
 {
 public:
-	KeyRightrrow() : Key('\0') {}
+	KeyRightArrow() : Key('\0') {}
 	int Execute(LineBuffer &lb, OutputChannel &oc);
 };
 
