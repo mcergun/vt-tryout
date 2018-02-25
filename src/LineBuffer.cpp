@@ -29,10 +29,10 @@ int LineBuffer::AddToHistory()
 int LineBuffer::AddToHistory(Line &ln)
 {
 	int ret = 0;
-	if (historyCnt < MAX_HISTORY_CNT)
+	if (historyCnt < MAX_HISTORY_CNT && history[historyCnt] != ln)
 	{
-		if (history[historyCnt] != ln)
-			history[historyCnt++] = ln;
+		history[historyCnt++] = ln;
+		curHistory = historyCnt;
 	}
 	else
 	{

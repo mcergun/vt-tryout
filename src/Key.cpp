@@ -1,4 +1,5 @@
 #include <cstring>
+#include <cstdio>
 #include <Key.h>
 
 Key::Key(char c) :
@@ -189,9 +190,14 @@ int KeyUpArrow::Execute(LineBuffer &lb, OutputChannel &oc)
 int KeyDownArrow::Execute(LineBuffer &lb, OutputChannel &oc)
 {
 	int ret = 0;
-	ret = lb.GetPrevFromHistory(lb.GetCurrentLine());
-	if (!ret)
-		ret = oc.ClearLine();
+	Line &curLine = lb.GetCurrentLine();
+	ret = lb.GetPrevFromHistory(curLine);
+	if (ret)
+	{
+		// means end of history, clear the buffer
+		curLine.Clear();
+	}
+	oc.ClearLine();
 	if (!ret)
 	{
 		const char *curLineStr = lb.GetCurrentLine().GetStringContent();
