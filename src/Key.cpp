@@ -17,6 +17,10 @@ KeyConverter::KeyConverter()
 	keyList[5] = new KeyRightArrow();
 	keyList[6] = new KeyLeftArrow();
 	keyList[7] = new KeyVisual('\0');
+	keyList[8] = new KeyBackspace();
+	keyList[9] = new KeyDelete();
+	keyList[10] = new KeyHome();
+	keyList[11] = new KeyEnd();
 }
 
 Key & KeyConverter::ToKey(const char *str)
@@ -112,12 +116,10 @@ Key & KeyConverter::ToKey(const char *str)
 				switch (curChar)
 				{
 				case 0x46:
-					// TODO: add support for END key, too.
-					retIdx = 0;
+					retIdx = 11;
 					break;
 				case 0x48:
-					// TODO: add support for HOME key, too.
-					retIdx = 0;
+					retIdx = 10;
 					break;
 				case 0x41:
 					retIdx = 3;
@@ -164,8 +166,10 @@ int KeyReturn::Execute(LineBuffer &lb, OutputChannel &oc)
 {
 	int ret = 0;
 	ret = lb.AddToHistory(lb.GetCurrentLine());
-	ret = lb.GetCurrentLine().Clear();
-	ret = oc.NewLine();
+	if (!ret)
+		ret = lb.GetCurrentLine().Clear();
+	if (!ret)
+		ret = oc.NewLine();
 
 	return ret;
 }
@@ -173,20 +177,28 @@ int KeyReturn::Execute(LineBuffer &lb, OutputChannel &oc)
 int KeyUpArrow::Execute(LineBuffer &lb, OutputChannel &oc)
 {
 	int ret = 0;
-	ret = lb.GetPrevFromHistory(lb.GetCurrentLine());
-	ret = oc.ClearLine();
-	const char *curLineStr = lb.GetCurrentLine().GetStringContent();
-	ret = oc.Write(curLineStr, strlen(curLineStr));
+	ret = lb.GetNextFromHistory(lb.GetCurrentLine());
+	if (!ret)
+		ret = oc.ClearLine();
+	if (!ret)
+	{
+		const char *curLineStr = lb.GetCurrentLine().GetStringContent();
+		ret = oc.Write(curLineStr, strlen(curLineStr));
+	}
 	return ret;
 }
 
 int KeyDownArrow::Execute(LineBuffer &lb, OutputChannel &oc)
 {
 	int ret = 0;
-	ret = lb.GetNextFromHistory(lb.GetCurrentLine());
-	ret = oc.ClearLine();
-	const char *curLineStr = lb.GetCurrentLine().GetStringContent();
-	ret = oc.Write(curLineStr, strlen(curLineStr));
+	ret = lb.GetPrevFromHistory(lb.GetCurrentLine());
+	if (!ret)
+		ret = oc.ClearLine();
+	if (!ret)
+	{
+		const char *curLineStr = lb.GetCurrentLine().GetStringContent();
+		ret = oc.Write(curLineStr, strlen(curLineStr));
+	}
 	return ret;
 }
 
@@ -194,7 +206,8 @@ int KeyLeftArrow::Execute(LineBuffer &lb, OutputChannel &oc)
 {
 	int ret = 0;
 	ret = lb.GetCurrentLine().MoveCursorLeft();
-	ret = oc.MoveCursorLeft();
+	if (!ret)
+		ret = oc.MoveCursorLeft();
 	return ret;
 }
 
@@ -202,14 +215,60 @@ int KeyRightArrow::Execute(LineBuffer &lb, OutputChannel &oc)
 {
 	int ret = 0;
 	ret = lb.GetCurrentLine().MoveCursorRight();
-	ret = oc.MoveCursorRight();
+	if (!ret)
+		ret = oc.MoveCursorRight();
 	return ret;
 }
 
 int KeyVisual::Execute(LineBuffer &lb, OutputChannel &oc)
 {
 	int ret = 0;
-	ret = lb.GetCurrentLine().Insert(this->visual);
-	ret = oc.InsertChar(this->visual);
+	Line &curLine = lb.GetCurrentLine();
+	ret = curLine.Insert(this->visual);
+	if (!ret)
+	{
+		oc.ClearLine();
+		oc.Write(curLine.GetStringContent(), curLine.GetLength());
+		oc.MoveCursorToStart();
+		for (int i = 0; i < curLine.GetPosition(); ++i)
+		{
+			oc.MoveCursorRight();
+		}
+	}
+	return ret;
+}
+
+int KeyBackspace::Execute(LineBuffer &lb, OutputChannel &oc)
+{
+	int ret = 0;
+	ret = lb.GetCurrentLine().MoveCursorRight();
+	if (!ret)
+		ret = oc.MoveCursorRight();
+	return ret;
+}
+
+int KeyDelete::Execute(LineBuffer &lb, OutputChannel &oc)
+{
+	int ret = 0;
+	ret = lb.GetCurrentLine().MoveCursorRight();
+	if (!ret)
+		ret = oc.MoveCursorRight();
+	return ret;
+}
+
+int KeyHome::Execute(LineBuffer &lb, OutputChannel &oc)
+{
+	int ret = 0;
+	ret = lb.GetCurrentLine().MoveCursorToStart();
+	ret = oc.MoveCursorToStart();
+	return ret;
+}
+
+int KeyEnd::Execute(LineBuffer &lb, OutputChannel &oc)
+{
+	int ret = 0;
+	int len = lb.GetCurrentLine().GetLength();
+	ret = lb.GetCurrentLine().MoveCursorToEnd();
+	ret = oc.MoveCursorRight(len);
 	return ret;
 }

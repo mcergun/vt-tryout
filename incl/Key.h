@@ -25,7 +25,7 @@ public:
 	KeyConverter();
 	Key & ToKey(const char *str);
 private:
-	static constexpr int UNIQ_KEY_COUNT = 8;
+	static constexpr int UNIQ_KEY_COUNT = 12;
 	static constexpr unsigned char CODE_ESC_START = 0x1B;
 	Key *keyList[UNIQ_KEY_COUNT];
 	bool isEscapeSequence = false;
@@ -88,6 +88,34 @@ public:
 	int Execute(LineBuffer &lb, OutputChannel &oc);
 private:
 	KeyVisual();
+};
+
+class KeyBackspace : public Key
+{
+public:
+	KeyBackspace() : Key('\0') {}
+	int Execute(LineBuffer &lb, OutputChannel &oc);
+};
+
+class KeyDelete : public Key
+{
+public:
+	KeyDelete() : Key('\0') {}
+	int Execute(LineBuffer &lb, OutputChannel &oc);
+};
+
+class KeyHome : public Key
+{
+public:
+	KeyHome() : Key('\0') {}
+	int Execute(LineBuffer &lb, OutputChannel &oc);
+};
+
+class KeyEnd : public Key
+{
+public:
+	KeyEnd() : Key('\0') {}
+	int Execute(LineBuffer &lb, OutputChannel &oc);
 };
 
 #endif
