@@ -92,6 +92,14 @@ int OutputChannel::InsertCharAt(const char c, int idx)
 	return ret;
 }
 
+int OutputChannel::Erase(const int count)
+{
+	int ret = 0;
+	strcpy(cmdBuf, "\x1B\x5B\x50");
+	ret = Write(cmdBuf, strlen(cmdBuf));
+	return ret;
+}
+
 int OutputChannel::MoveCursorToStart()
 {
 	int ret = 0;

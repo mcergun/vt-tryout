@@ -16,6 +16,7 @@ public:
 	int ClearLine();
 	int InsertChar(const char c);
 	int InsertCharAt(const char c, int idx);
+	int Erase(const int count = 1);
 	int MoveCursorToStart();
 	int MoveCursorToEnd();
 	int MoveCursorUp(int count = 1);
