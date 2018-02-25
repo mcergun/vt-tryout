@@ -47,8 +47,8 @@ int LineBuffer::GetNextFromHistory(Line &ln)
 	int ret = 0;
 	if (curHistory < 1)
 	{
-		ret = -1;
 		curHistory = 0;
+		ret = -1;
 	}
 	else
 	{
@@ -67,6 +67,7 @@ int LineBuffer::GetPrevFromHistory(Line &ln)
 	else
 	{
 		curHistory = historyCnt;
+		ret = -1;
 	}
 	return ret;
 }

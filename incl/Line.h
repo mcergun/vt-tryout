@@ -10,10 +10,12 @@ public:
 	Line& operator=(Line &ln);
 	bool operator==(Line &ln);
 	bool operator!=(Line &ln);
-	const char * GetStringContent();
+	const int GetLength() const;
+	const int GetPosition() const;
+	const char * GetStringContent() const;
 	int MoveCursorLeft(int count = 1);
 	int MoveCursorRight(int count = 1);
-	int MoveCursorToHome();
+	int MoveCursorToStart();
 	int MoveCursorToEnd();
 	int Insert(const char c);
 	int Insert(const char *c, int len);

@@ -27,7 +27,17 @@ bool Line::operator!=(Line &ln)
 	return !operator==(ln);
 }
 
-const char * Line::GetStringContent()
+const int Line::GetLength() const
+{
+	return lineLen;
+}
+
+const int Line::GetPosition() const
+{
+	return curPos;
+}
+
+const char * Line::GetStringContent() const
 {
 	return const_cast<const char *>(lineBuf);
 }
@@ -62,7 +72,7 @@ int Line::MoveCursorRight(int count)
 	return ret;
 }
 
-int Line::MoveCursorToHome()
+int Line::MoveCursorToStart()
 {
 	curPos = 0;
 	return 0;
