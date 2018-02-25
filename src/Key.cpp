@@ -164,11 +164,9 @@ Key & KeyConverter::ToKey(const char *str)
 int KeyReturn::Execute(LineBuffer &lb, OutputChannel &oc)
 {
 	int ret = 0;
-	ret = lb.AddToHistory(lb.GetCurrentLine());
-	if (!ret)
-		ret = lb.GetCurrentLine().Clear();
-	if (!ret)
-		ret = oc.NewLine();
+	lb.AddToHistory(lb.GetCurrentLine());
+	lb.GetCurrentLine().Clear();
+	oc.NewLine();
 
 	return ret;
 }

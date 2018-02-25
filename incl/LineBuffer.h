@@ -6,7 +6,7 @@
 class LineBuffer
 {
 public:
-	static const int MAX_HISTORY_CNT = 64;
+	static constexpr int MAX_HISTORY_CNT = 64;
 	LineBuffer();
 	Line &GetCurrentLine();
 	int AddToHistory();
