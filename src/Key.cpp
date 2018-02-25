@@ -1,5 +1,4 @@
 #include <cstring>
-#include <cstdio>
 #include <Key.h>
 
 Key::Key(char c) :
