@@ -53,8 +53,7 @@ int OutputChannel::Write(const void *buf, int len)
 	{
 		ret = fputc(*cbuf, stdout);
 	}
-
-	return ret;
+	return ret < 0;
 }
 
 void OutputChannel::FlushBuffers()
