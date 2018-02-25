@@ -51,8 +51,7 @@ Key & KeyConverter::ToKey(const char *str)
 					retIdx = 0;
 					break;
 				case 0x7f:
-					// TODO: add support for Backspace key, too.
-					retIdx = 0;
+					retIdx = 8;
 					break;
 				case 0x20:
 				case 0x2d:
@@ -145,8 +144,7 @@ Key & KeyConverter::ToKey(const char *str)
 			{
 				if (curChar == 0x7E)
 				{
-					// TODO: add support for DEL key, too.
-					retIdx = 0;
+					retIdx = 9;
 				}
 			}
 			// else, keep code as unknown
@@ -241,18 +239,23 @@ int KeyVisual::Execute(LineBuffer &lb, OutputChannel &oc)
 int KeyBackspace::Execute(LineBuffer &lb, OutputChannel &oc)
 {
 	int ret = 0;
-	ret = lb.GetCurrentLine().MoveCursorRight();
+	ret = lb.GetCurrentLine().MoveCursorLeft();
 	if (!ret)
-		ret = oc.MoveCursorRight();
+		ret = lb.GetCurrentLine().Erase();
+	if (!ret)
+	{
+		ret = oc.MoveCursorLeft();
+		ret = oc.Erase();
+	}
 	return ret;
 }
 
 int KeyDelete::Execute(LineBuffer &lb, OutputChannel &oc)
 {
 	int ret = 0;
-	ret = lb.GetCurrentLine().MoveCursorRight();
+	ret = lb.GetCurrentLine().Erase();
 	if (!ret)
-		ret = oc.MoveCursorRight();
+		ret = oc.Erase();
 	return ret;
 }
 

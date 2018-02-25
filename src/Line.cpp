@@ -123,7 +123,17 @@ int Line::InsertAt(const char *str, int len, int idx)
 
 int Line::Erase(int len)
 {
-	return 0;
+	int ret = 0;
+	if (curPos < lineLen)
+	{
+		strcpy(lineBuf + curPos, lineBuf + curPos + 1);
+		lineLen--;
+	}
+	else
+	{
+		ret = -1;
+	}
+	return ret;
 }
 
 int Line::Replace(const char *str)
