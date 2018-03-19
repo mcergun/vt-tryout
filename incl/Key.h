@@ -23,6 +23,7 @@ class KeyConverter
 {
 public:
 	KeyConverter();
+	~KeyConverter();
 	Key & ToKey(const char *str);
 private:
 	static constexpr int UNIQ_KEY_COUNT = 12;

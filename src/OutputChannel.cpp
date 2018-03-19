@@ -136,7 +136,12 @@ int OutputChannel::MoveCursorRight(int count)
 {
 	int ret = 0;
 	strcpy(cmdBuf, "\x1B\x5B\x43");
-	ret = Write(cmdBuf, strlen(cmdBuf));
+	// TODO: Revert this workaround and actually send count as parameter
+	//       in the command
+	for (int i = 0; i < count && ret >= 0; ++i)
+	{
+		ret = Write(cmdBuf, strlen(cmdBuf));
+	}
 	return ret;
 }
 

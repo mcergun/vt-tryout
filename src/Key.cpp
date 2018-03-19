@@ -8,6 +8,7 @@ Key::Key(char c) :
 
 KeyConverter::KeyConverter()
 {
+	// TODO: Find a better way to handle number of keys
 	// fill the list to be returned to converter requests
 	keyList[0] = new KeyIgnore();
 	keyList[1] = new KeyEscape();
@@ -21,6 +22,16 @@ KeyConverter::KeyConverter()
 	keyList[9] = new KeyDelete();
 	keyList[10] = new KeyHome();
 	keyList[11] = new KeyEnd();
+}
+
+KeyConverter::~KeyConverter()
+{
+	// TODO: Find a better way to handle number of keys
+	for (int i = 0; i < 12; ++i)
+	{
+		delete keyList[i];
+		keyList[i] = nullptr;
+	}
 }
 
 Key & KeyConverter::ToKey(const char *str)
@@ -275,6 +286,7 @@ int KeyEnd::Execute(LineBuffer &lb, OutputChannel &oc)
 	int ret = 0;
 	int len = lb.GetCurrentLine().GetLength();
 	ret = lb.GetCurrentLine().MoveCursorToEnd();
+	ret = oc.MoveCursorToStart();
 	ret = oc.MoveCursorRight(len);
 	return ret;
 }
