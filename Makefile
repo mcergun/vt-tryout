@@ -1,8 +1,12 @@
 CC = g++
 CFLAGS = -Iincl -Wall -g
 
-all: Main Key LineBuffer Line OutputChannel
-	$(CC) -o bin/term-impl obj/OutputChannel.o obj/LineBuffer.o obj/Line.o obj/Key.o obj/Main.o
+all: CreateFolders Main Key LineBuffer Line OutputChannel AutoComplete
+	$(CC) -o bin/term-impl obj/OutputChannel.o obj/AutoComplete.o obj/LineBuffer.o obj/Line.o obj/Key.o obj/Main.o
+
+CreateFolders:
+	mkdir -p obj
+	mkdir -p bin
 
 Main:
 	$(CC) -o obj/Main.o -c src/main.cpp $(CFLAGS)
@@ -18,6 +22,9 @@ Line:
 
 OutputChannel:
 	$(CC) -o obj/OutputChannel.o -c src/OutputChannel.cpp $(CFLAGS)
+	
+AutoComplete:
+	$(CC) -o obj/AutoComplete.o -c src/AutoComplete.cpp $(CFLAGS)
 
 clean:
 	rm -rf obj/*

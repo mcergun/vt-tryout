@@ -160,3 +160,9 @@ int Line::Clear()
 
 	return 0;
 }
+
+int Line::AutoCompleteCurPos()
+{
+	
+	return 0;
+}

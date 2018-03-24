@@ -25,6 +25,7 @@ public:
 	int Replace(const char *str);
 	int Replace(const Line &ln);
 	int Clear();
+	int AutoCompleteCurPos();
 private:
 	char lineBuf[MAX_LINE_LEN] = {0};
 	char lineIntmdBuf[MAX_LINE_LEN] = {0};
