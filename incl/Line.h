@@ -27,6 +27,8 @@ public:
 	int Clear();
 	int AutoCompleteCurPos();
 private:
+	unsigned int GetStartIdxOfWord();
+
 	char lineBuf[MAX_LINE_LEN] = {0};
 	char lineIntmdBuf[MAX_LINE_LEN] = {0};
 	int curPos = 0;

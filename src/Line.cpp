@@ -163,6 +163,19 @@ int Line::Clear()
 
 int Line::AutoCompleteCurPos()
 {
+	unsigned int wordStartIdx = GetStartIdxOfWord();
 	
 	return 0;
+}
+
+unsigned int Line::GetStartIdxOfWord()
+{
+	unsigned int locIdx = curPos;
+	bool isSpace = false;
+	while (locIdx-- > 0 && !isSpace)
+	{
+		isSpace = lineBuf[locIdx] == ' ';
+	}
+
+	return locIdx;
 }
