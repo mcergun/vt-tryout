@@ -236,7 +236,7 @@ int KeyVisual::Execute(LineBuffer &lb, OutputChannel &oc)
 {
 	int ret = 0;
 	Line &curLine = lb.GetCurrentLine();
-	ret = curLine.Insert(this->visual);
+	ret = curLine.Insert(visual);
 	if (!ret)
 	{
 		oc.ClearLine();

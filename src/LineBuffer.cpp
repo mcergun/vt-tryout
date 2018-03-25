@@ -64,12 +64,12 @@ int LineBuffer::AddToHistory(Line &ln)
 		if (history[historyCnt - 1] != ln && ln.GetLength() > 0)
 		{
 			history[historyCnt++] = ln;
-			curHistory = historyCnt;
 		}
 		else
 		{
 			ret = -1;
 		}
+		curHistory = historyCnt;
 	}
 	else
 	{
