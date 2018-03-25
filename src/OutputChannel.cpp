@@ -63,7 +63,7 @@ void OutputChannel::FlushBuffers()
 int OutputChannel::NewLine()
 {
 	int ret = 0;
-	strcpy(cmdBuf, "\x1B\x5B\x53\x1B\x5B\x45");
+	strcpy(cmdBuf, "\r\n");
 	ret = Write(cmdBuf, strlen(cmdBuf));
 	return ret;
 }
