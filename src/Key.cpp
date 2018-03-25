@@ -22,6 +22,7 @@ KeyConverter::KeyConverter()
 	keyList[9] = new KeyDelete();
 	keyList[10] = new KeyHome();
 	keyList[11] = new KeyEnd();
+	keyList[12] = new KeyTab();
 }
 
 KeyConverter::~KeyConverter()
@@ -59,7 +60,7 @@ Key & KeyConverter::ToKey(const char *str)
 					break;
 				case 0x09:
 					// TODO: add support for TAB key, too.
-					retIdx = 0;
+					retIdx = 12;
 					break;
 				case 0x7f:
 					retIdx = 8;
@@ -288,5 +289,20 @@ int KeyEnd::Execute(LineBuffer &lb, OutputChannel &oc)
 	ret = lb.GetCurrentLine().MoveCursorToEnd();
 	ret = oc.MoveCursorToStart();
 	ret = oc.MoveCursorRight(len);
+	return ret;
+}
+
+int KeyTab::Execute(LineBuffer &lb, OutputChannel &oc)
+{
+	int ret = 0;
+	Line &curLine = lb.GetCurrentLine();
+	ret = curLine.AutoCompleteCurPos();
+	ret = oc.ClearLine();
+	ret = oc.Write(curLine.GetStringContent(), curLine.GetLength());
+	oc.MoveCursorToStart();
+	for (int i = 0; i < curLine.GetPosition(); ++i)
+	{
+		oc.MoveCursorRight();
+	}
 	return ret;
 }

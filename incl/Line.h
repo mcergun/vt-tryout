@@ -1,6 +1,8 @@
 #ifndef _LINE_H_
 #define _LINE_H_
 
+#include <AutoComplete.h>
+
 class Line
 {
 public:
@@ -26,6 +28,7 @@ public:
 	int Replace(const Line &ln);
 	int Clear();
 	int AutoCompleteCurPos();
+	void SetAutoCompleter(AutoComplete *completer);
 private:
 	unsigned int GetStartIdxOfWord();
 
@@ -33,6 +36,7 @@ private:
 	char lineIntmdBuf[MAX_LINE_LEN] = {0};
 	int curPos = 0;
 	int lineLen = 0;
+	AutoComplete *completer = nullptr;
 };
 
 #endif

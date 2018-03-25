@@ -26,7 +26,7 @@ public:
 	~KeyConverter();
 	Key & ToKey(const char *str);
 private:
-	static constexpr int UNIQ_KEY_COUNT = 12;
+	static constexpr int UNIQ_KEY_COUNT = 13;
 	static constexpr unsigned char CODE_ESC_START = 0x1B;
 	Key *keyList[UNIQ_KEY_COUNT];
 	bool isEscapeSequence = false;
@@ -116,6 +116,13 @@ class KeyEnd : public Key
 {
 public:
 	KeyEnd() : Key('\0') {}
+	int Execute(LineBuffer &lb, OutputChannel &oc);
+};
+
+class KeyTab : public Key
+{
+public:
+	KeyTab() : Key('\0') {}
 	int Execute(LineBuffer &lb, OutputChannel &oc);
 };
 

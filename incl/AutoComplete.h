@@ -11,8 +11,8 @@ public:
 private:
 	static constexpr unsigned int MAX_NUMBER_OF_CANDIDATES = 64;
 	static constexpr unsigned int MAX_CANDIDATE_LEN = 64;
-	char candidates[MAX_NUMBER_OF_CANDIDATES][MAX_CANDIDATE_LEN] = { 0 };
-	unsigned int candidateCnt = 0;
+	char candidates[MAX_NUMBER_OF_CANDIDATES][MAX_CANDIDATE_LEN] = { "auto", "complete", "list" };
+	unsigned int candidateCnt = 3;
 };
 
 #endif

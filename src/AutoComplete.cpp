@@ -28,9 +28,9 @@ const char * AutoComplete::GetCandidate(const char *base)
 	bool matched = false;
 	const char *ans = nullptr;
 	unsigned int i = 0;
-	for (; i < candidateCnt; ++i)
+	for (; i < candidateCnt && !matched; ++i)
 	{
-		matched = strcmp(base, candidates[i]) == 0;
+		matched = strncmp(base, candidates[i], strlen(base)) == 0;
 	}
 	if (matched)
 		ans = candidates[i - 1];

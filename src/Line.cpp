@@ -163,7 +163,22 @@ int Line::Clear()
 
 int Line::AutoCompleteCurPos()
 {
-	unsigned int wordStartIdx = GetStartIdxOfWord();
+	if (completer != nullptr)
+	{
+		unsigned int wordStartIdx = GetStartIdxOfWord();
+		char *curWord = &lineBuf[wordStartIdx];
+		const char *ans = completer->GetCandidate(curWord);
+		if (strcmp(curWord, ans) != 0)
+		{
+			curPos += (strlen(ans) - strlen(curWord));
+			lineLen += (strlen(ans) - strlen(curWord));
+			strcpy(curWord, ans);
+		}
+	}
+	else
+	{
+		completer = new AutoComplete();
+	}
 	
 	return 0;
 }
@@ -172,10 +187,15 @@ unsigned int Line::GetStartIdxOfWord()
 {
 	unsigned int locIdx = curPos;
 	bool isSpace = false;
-	while (locIdx-- > 0 && !isSpace)
+	while (locIdx > 0 && !isSpace)
 	{
-		isSpace = lineBuf[locIdx] == ' ';
+		isSpace = lineBuf[locIdx--] == ' ';
 	}
 
 	return locIdx;
+}
+
+void Line::SetAutoCompleter(AutoComplete *completer)
+{
+	this->completer = completer;
 }
