@@ -138,7 +138,7 @@ int Line::Erase(int len)
 
 int Line::Replace(const char *str)
 {
-	strcpy(this->lineBuf, str);
+	strcpy(lineBuf, str);
 	return 0;
 }
 
@@ -153,10 +153,10 @@ int Line::Replace(const Line &ln)
 
 int Line::Clear()
 {
-	memset(this->lineBuf, 0, MAX_LINE_LEN);
-	memset(this->lineIntmdBuf, 0, MAX_LINE_LEN);
-	this->lineLen = 0;
-	this->curPos = 0;
+	memset(lineBuf, 0, MAX_LINE_LEN);
+	memset(lineIntmdBuf, 0, MAX_LINE_LEN);
+	lineLen = 0;
+	curPos = 0;
 
 	return 0;
 }

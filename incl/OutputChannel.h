@@ -16,18 +16,20 @@ public:
 	int ClearLine();
 	int InsertChar(const char c);
 	int InsertCharAt(const char c, int idx);
-	int Erase(const int count = 1);
+	int Erase(unsigned int count = 1);
 	int MoveCursorToStart();
 	int MoveCursorToEnd();
-	int MoveCursorUp(int count = 1);
-	int MoveCursorDown(int count = 1);
-	int MoveCursorRight(int count = 1);
-	int MoveCursorLeft(int count = 1);
+	int MoveCursorUp(unsigned int count = 1);
+	int MoveCursorDown(unsigned int count = 1);
+	int MoveCursorRight(unsigned int count = 1);
+	int MoveCursorLeft(unsigned int count = 1);
 	
 private:
 	static constexpr int MAX_CMD_LEN = 32;
 	termios term, termOrig;
 	char cmdBuf[MAX_CMD_LEN] = {0};
+
+	inline void FillThreeSeqWithNumber(const char keyCode, unsigned int count);
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <unistd.h>
 #include <cstring>
+#include <HelperFuncs.h>
 #include <OutputChannel.h>
 
 OutputChannel::OutputChannel()
@@ -63,7 +64,7 @@ void OutputChannel::FlushBuffers()
 int OutputChannel::NewLine()
 {
 	int ret = 0;
-	strcpy(cmdBuf, "\x1B\x5B\x53\x1B\x5B\x45");
+	strcpy(cmdBuf, "\r\n");
 	ret = Write(cmdBuf, strlen(cmdBuf));
 	return ret;
 }
@@ -92,63 +93,67 @@ int OutputChannel::InsertCharAt(const char c, int idx)
 	return ret;
 }
 
-int OutputChannel::Erase(const int count)
+int OutputChannel::Erase(unsigned int count)
 {
 	int ret = 0;
-	strcpy(cmdBuf, "\x1B\x5B\x50");
+	FillThreeSeqWithNumber(0x50, count);
 	ret = Write(cmdBuf, strlen(cmdBuf));
 	return ret;
 }
 
 int OutputChannel::MoveCursorToStart()
 {
-	int ret = 0;
-	strcpy(cmdBuf, "\x1B\x5B""999\x44");
-	ret = Write(cmdBuf, strlen(cmdBuf));
+	int ret = MoveCursorLeft(999);
 	return ret;
 }
 
 int OutputChannel::MoveCursorToEnd()
 {
+	int ret = MoveCursorRight(999);
+	return ret;
+}
+
+int OutputChannel::MoveCursorUp(unsigned int count)
+{
 	int ret = 0;
-	strcpy(cmdBuf, "\x1B\x5B""999\x43");
+	FillThreeSeqWithNumber(0x41, count);
 	ret = Write(cmdBuf, strlen(cmdBuf));
 	return ret;
 }
 
-int OutputChannel::MoveCursorUp(int count)
+int OutputChannel::MoveCursorDown(unsigned int count)
 {
 	int ret = 0;
-	strcpy(cmdBuf, "\x1B\x5B\x41");
+	FillThreeSeqWithNumber(0x42, count);
 	ret = Write(cmdBuf, strlen(cmdBuf));
 	return ret;
 }
 
-int OutputChannel::MoveCursorDown(int count)
+int OutputChannel::MoveCursorRight(unsigned int count)
 {
 	int ret = 0;
-	strcpy(cmdBuf, "\x1B\x5B\x42");
+	FillThreeSeqWithNumber(0x43, count);
 	ret = Write(cmdBuf, strlen(cmdBuf));
 	return ret;
 }
 
-int OutputChannel::MoveCursorRight(int count)
+int OutputChannel::MoveCursorLeft(unsigned int count)
 {
 	int ret = 0;
-	strcpy(cmdBuf, "\x1B\x5B\x43");
-	// TODO: Revert this workaround and actually send count as parameter
-	//       in the command
-	for (int i = 0; i < count && ret >= 0; ++i)
-	{
-		ret = Write(cmdBuf, strlen(cmdBuf));
-	}
+	FillThreeSeqWithNumber(0x44, count);
+	ret = Write(cmdBuf, strlen(cmdBuf));
 	return ret;
 }
 
-int OutputChannel::MoveCursorLeft(int count)
+void OutputChannel::FillThreeSeqWithNumber(const char keyCode, unsigned int count)
 {
-	int ret = 0;
-	strcpy(cmdBuf, "\x1B\x5B\x44");
-	ret = Write(cmdBuf, strlen(cmdBuf));
-	return ret;
+	strcpy(cmdBuf, "\x1B\x5B");
+	// Supports up to 999, which is more than enough
+	char endbuf[5] = { 0 };
+	if (count > 999)
+		count = 999;
+	itoa(count, endbuf, 10);
+	endbuf[strlen(endbuf)] = keyCode;
+	endbuf[strlen(endbuf) + 1] = '\0';
+	strcpy(&cmdBuf[2], endbuf);
 }
