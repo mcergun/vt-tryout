@@ -189,9 +189,12 @@ unsigned int Line::GetStartIdxOfWord()
 	bool isSpace = false;
 	while (locIdx > 0 && !isSpace)
 	{
-		isSpace = lineBuf[locIdx--] == ' ';
+		isSpace = lineBuf[locIdx] == ' ';
+		if (!isSpace)
+			locIdx--;
 	}
-
+	if (isSpace)
+		locIdx++;
 	return locIdx;
 }
 
