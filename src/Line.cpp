@@ -165,37 +165,60 @@ int Line::AutoCompleteCurPos()
 {
 	if (completer != nullptr)
 	{
-		unsigned int wordStartIdx = GetStartIdxOfWord();
-		char *curWord = &lineBuf[wordStartIdx];
-		const char *ans = completer->GetCandidate(curWord);
-		if (strcmp(curWord, ans) != 0)
+		if (curPos == lineLen)
 		{
-			curPos += (strlen(ans) - strlen(curWord));
-			lineLen += (strlen(ans) - strlen(curWord));
-			strcpy(curWord, ans);
+			unsigned int wordStartIdx = GetStartIdxOfWord();
+			if (curPos > wordStartIdx)
+			{
+				AutoCompleteWord word;
+				char candidateBuf[AutoComplete::MAX_CANDIDATE_LEN] = { 0 };
+				word.ptr = candidateBuf;
+				word.len = curPos - wordStartIdx;
+				strncpy(candidateBuf, &lineBuf[wordStartIdx], word.len);
+				word = completer->GetCandidate(word);
+				if (word.len > 0)
+				{
+					int curLen = curPos - wordStartIdx;
+					int addLen = word.len - curLen;
+					strncpy(&lineBuf[curPos], &word.ptr[curLen], addLen);
+					lineLen += addLen;
+					curPos = lineLen;
+				}
+			}
 		}
+		// const char *ans = completer->GetCandidate(curWord);
+		// if (strcmp(curWord, ans) != 0)
+		// {
+		// 	curPos += (strlen(ans) - strlen(curWord));
+		// 	lineLen += (strlen(ans) - strlen(curWord));
+		// 	strcpy(curWord, ans);
+		// }
 	}
 	else
 	{
 		completer = new AutoComplete();
 	}
-	
+
 	return 0;
 }
 
 unsigned int Line::GetStartIdxOfWord()
 {
-	unsigned int locIdx = curPos;
-	bool isSpace = false;
-	while (locIdx > 0 && !isSpace)
+	unsigned int ret = 0;
+	if (curPos > 0)
 	{
-		isSpace = lineBuf[locIdx] == ' ';
-		if (!isSpace)
-			locIdx--;
+		ret = curPos - 1;
+		bool isSpace = false;
+		while (ret > 0 && !isSpace)
+		{
+			isSpace = lineBuf[ret] == ' ';
+			if (!isSpace)
+				ret--;
+		}
+		if (isSpace)
+			ret++;
 	}
-	if (isSpace)
-		locIdx++;
-	return locIdx;
+	return ret;
 }
 
 void Line::SetAutoCompleter(AutoComplete *completer)

@@ -23,18 +23,35 @@ void AutoComplete::AddToCandidates(const char *candidate)
 		strcpy(candidates[candidateCnt], candidate);
 }
 
-const char * AutoComplete::GetCandidate(const char *base)
+AutoCompleteWord& AutoComplete::GetCandidate(AutoCompleteWord &base)
 {
 	bool matched = false;
-	const char *ans = nullptr;
 	unsigned int i = 0;
 	for (; i < candidateCnt && !matched; ++i)
 	{
-		matched = strncmp(base, candidates[i], strlen(base)) == 0;
+		matched = (strncmp(base.ptr, candidates[i], base.len) == 0);
 	}
 	if (matched)
-		ans = candidates[i - 1];
+	{
+		base.ptr = candidates[i - 1];
+		base.len = strlen(candidates[i - 1]);
+	}
 	else
-		ans = base;
-	return ans;
+	{
+		// Length is set to -1 to indicate no appropriate candidate
+		base.len = -1;
+	}
+	return base;
+	// bool matched = false;
+	// const char *ans = nullptr;
+	// unsigned int i = 0;
+	// for (; i < candidateCnt && !matched; ++i)
+	// {
+	// 	matched = strncmp(base, candidates[i], strlen(base)) == 0;
+	// }
+	// if (matched)
+	// 	ans = candidates[i - 1];
+	// else
+	// 	ans = base;
+	// return ans;
 }

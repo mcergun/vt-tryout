@@ -300,9 +300,6 @@ int KeyTab::Execute(LineBuffer &lb, OutputChannel &oc)
 	ret = oc.ClearLine();
 	ret = oc.Write(curLine.GetStringContent(), curLine.GetLength());
 	oc.MoveCursorToStart();
-	for (int i = 0; i < curLine.GetPosition(); ++i)
-	{
-		oc.MoveCursorRight();
-	}
+	oc.MoveCursorRight(curLine.GetPosition());
 	return ret;
 }
