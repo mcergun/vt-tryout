@@ -27,12 +27,12 @@ bool Line::operator!=(Line &ln)
 	return !operator==(ln);
 }
 
-const int Line::GetLength() const
+const unsigned int Line::GetLength() const
 {
 	return lineLen;
 }
 
-const int Line::GetPosition() const
+const unsigned int Line::GetPosition() const
 {
 	return curPos;
 }
@@ -42,7 +42,7 @@ const char * Line::GetStringContent() const
 	return const_cast<const char *>(lineBuf);
 }
 
-int Line::MoveCursorLeft(int count)
+int Line::MoveCursorLeft(unsigned int count)
 {
 	int ret = 0;
 	if (count > curPos)
@@ -57,7 +57,7 @@ int Line::MoveCursorLeft(int count)
 	return ret;
 }
 
-int Line::MoveCursorRight(int count)
+int Line::MoveCursorRight(unsigned int count)
 {
 	int ret = 0;
 	if (curPos + count > lineLen)
@@ -89,7 +89,7 @@ int Line::Insert(const char c)
 	return Insert(&c, 1);
 }
 
-int Line::Insert(const char *str, int len)
+int Line::Insert(const char *str, unsigned int len)
 {
 	int ret = 0;
 	if (curPos < lineLen)
@@ -109,19 +109,19 @@ int Line::Insert(const char *str, int len)
 	return ret;
 }
 
-int Line::InsertAt(const char c, int idx)
+int Line::InsertAt(const char c, unsigned int idx)
 {
 	curPos = idx;
 	return Insert(&c, 1);
 }
 
-int Line::InsertAt(const char *str, int len, int idx)
+int Line::InsertAt(const char *str, unsigned int len, int idx)
 {
 	curPos = idx;
 	return Insert(str, len);
 }
 
-int Line::Erase(int len)
+int Line::Erase(unsigned int len)
 {
 	int ret = 0;
 	if (curPos < lineLen)

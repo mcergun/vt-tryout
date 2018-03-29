@@ -245,7 +245,7 @@ int KeyVisual::Execute(LineBuffer &lb, OutputChannel &oc)
 		oc.ClearLine();
 		oc.Write(curLine.GetStringContent(), curLine.GetLength());
 		oc.MoveCursorToStart();
-		for (int i = 0; i < curLine.GetPosition(); ++i)
+		for (unsigned int i = 0; i < curLine.GetPosition(); ++i)
 		{
 			oc.MoveCursorRight();
 		}
@@ -256,9 +256,10 @@ int KeyVisual::Execute(LineBuffer &lb, OutputChannel &oc)
 int KeyBackspace::Execute(LineBuffer &lb, OutputChannel &oc)
 {
 	int ret = 0;
-	ret = lb.GetCurrentLine().MoveCursorLeft();
+	Line &curLine = lb.GetCurrentLine();
+	ret = curLine.MoveCursorLeft();
 	if (!ret)
-		ret = lb.GetCurrentLine().Erase();
+		ret = curLine.Erase();
 	if (!ret)
 	{
 		ret = oc.MoveCursorLeft();
