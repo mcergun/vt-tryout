@@ -44,7 +44,7 @@ Key & KeyConverter::ToKey(const char *str)
 		char curChar = str[i];
 		if (!isEscapeSequence)
 		{
-			if (curChar == CODE_ESC_START)
+			if (curChar == KeyCode_Escape)
 			{
 				isEscapeSequence = true;
 				seqLen++;
@@ -55,45 +55,48 @@ Key & KeyConverter::ToKey(const char *str)
 				// should be a visual character
 				switch (curChar)
 				{
-				case 0x0a:
+				case KeyCode_Return:
 					retIdx = 2;
 					break;
-				case 0x09:
+				case KeyCode_Tab:
 					// TODO: add support for TAB key, too.
 					retIdx = 12;
 					break;
-				case 0x7f:
+				case KeyCode_Backspace:
 					retIdx = 8;
 					break;
-				case 0x20:
-				case 0x2d:
-				case 0x2b:
-				case 0x2a:
-				case 0x2f:
-				case 0x2e:
-				case 0x2c:
-				case 0x27:
-				case 0x22:
-				case 0x3b:
-				case 0x3a:
-				case 0x3c:
-				case 0x3e:
-				case 0x3f:
-				case 0x7e:
-				case 0x21:
-				case 0x40:
-				case 0x23:
-				case 0x24:
-				case 0x25:
-				case 0x5e:
-				case 0x26:
-				case 0x28:
-				case 0x29:
-				case 0x5f:
-				case 0x7b:
-				case 0x7d:
-				case 0x5c:
-				case 0x7c:
+				case KeyCode_VisSpace:
+				case KeyCode_VisExclMark:
+				case KeyCode_VisDoubleQuotes:
+				case KeyCode_VisSharp:
+				case KeyCode_VisDollar:
+				case KeyCode_VisPercent:
+				case KeyCode_VisAmpercend:
+				case KeyCode_VisSingleQuote:
+				case KeyCode_VisLeftParanth:
+				case KeyCode_VisRightParanth:
+				case KeyCode_VisAsterisk:
+				case KeyCode_VisPlusSign:
+				case KeyCode_VisComma:
+				case KeyCode_VisMinusSign:
+				case KeyCode_VisDot:
+				case KeyCode_VisSlash:
+				case KeyCode_VisColon:
+				case KeyCode_VisSemiColon:
+				case KeyCode_VisLessThan:
+				case KeyCode_VisEqual:
+				case KeyCode_VisGrtThan:
+				case KeyCode_VisQuestion:
+				case KeyCode_VisAtSign:
+				case KeyCode_VisLeftBracket:
+				case KeyCode_VisBackSlash:
+				case KeyCode_VisRightBracket:
+				case KeyCode_VisCaret:
+				case KeyCode_VisUnderscore:
+				case KeyCode_VisLeftBraces:
+				case KeyCode_VisPerpendicular:
+				case KeyCode_VisRightBraces:
+				case KeyCode_VisTilde:
 					retIdx = 7;
 					keyList[retIdx]->visual = curChar;
 					break;
@@ -117,7 +120,7 @@ Key & KeyConverter::ToKey(const char *str)
 		else
 		{
 			// continue checking characters for incoming parts
-			if (seqLen == 1 && curChar == 0x5B)
+			if (seqLen == 1 && curChar == KeyCode_Escape2)
 			{
 				seqLen++;
 				retIdx = 1;
@@ -126,25 +129,25 @@ Key & KeyConverter::ToKey(const char *str)
 			{
 				switch (curChar)
 				{
-				case 0x46:
+				case KeyCode_End:
 					retIdx = 11;
 					break;
-				case 0x48:
+				case KeyCode_Home:
 					retIdx = 10;
 					break;
-				case 0x41:
+				case KeyCode_UpArrow:
 					retIdx = 3;
 					break;
-				case 0x42:
+				case KeyCode_DownArrow:
 					retIdx = 4;
 					break;
-				case 0x43:
+				case KeyCode_RightArrow:
 					retIdx = 5;
 					break;
-				case 0x44:
+				case KeyCode_LeftArrow:
 					retIdx = 6;
 					break;
-				case 0x33:
+				case KeyCode_Escape3:
 					seqLen++;
 					retIdx = 1;
 					break;
@@ -154,7 +157,7 @@ Key & KeyConverter::ToKey(const char *str)
 			}
 			else if (seqLen == 3)
 			{
-				if (curChar == 0x7E)
+				if (curChar == KeyCode_Delete)
 				{
 					retIdx = 9;
 				}
@@ -243,7 +246,7 @@ int KeyVisual::Execute(LineBuffer &lb, OutputChannel &oc)
 		oc.ClearLine();
 		oc.Write(curLine.GetStringContent(), curLine.GetLength());
 		oc.MoveCursorToStart();
-		for (int i = 0; i < curLine.GetPosition(); ++i)
+		for (unsigned int i = 0; i < curLine.GetPosition(); ++i)
 		{
 			oc.MoveCursorRight();
 		}
@@ -254,9 +257,10 @@ int KeyVisual::Execute(LineBuffer &lb, OutputChannel &oc)
 int KeyBackspace::Execute(LineBuffer &lb, OutputChannel &oc)
 {
 	int ret = 0;
-	ret = lb.GetCurrentLine().MoveCursorLeft();
+	Line &curLine = lb.GetCurrentLine();
+	ret = curLine.MoveCursorLeft();
 	if (!ret)
-		ret = lb.GetCurrentLine().Erase();
+		ret = curLine.Erase();
 	if (!ret)
 	{
 		ret = oc.MoveCursorLeft();

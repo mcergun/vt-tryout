@@ -10,12 +10,12 @@ public:
 	~OutputChannel();
 	int Initialize();
 	int Read(void *buf);
-	int Write(const void *buf, int len);
+	int Write(const void *buf, unsigned int len);
 	void FlushBuffers();
 	int NewLine();
 	int ClearLine();
 	int InsertChar(const char c);
-	int InsertCharAt(const char c, int idx);
+	int InsertCharAt(const char c, unsigned int idx);
 	int Erase(unsigned int count = 1);
 	int MoveCursorToStart();
 	int MoveCursorToEnd();

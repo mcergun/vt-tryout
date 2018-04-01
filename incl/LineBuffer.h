@@ -6,7 +6,7 @@
 class LineBuffer
 {
 public:
-	static constexpr int MAX_HISTORY_CNT = 64;
+	static constexpr unsigned int MAX_HISTORY_CNT = 64;
 	LineBuffer();
 	Line &GetCurrentLine();
 	int AddToHistory();
@@ -16,8 +16,8 @@ public:
 private:
 	Line history[MAX_HISTORY_CNT];
 	Line currentLine;
-	int historyCnt = 0;
-	int curHistory = 0;
+	unsigned int historyCnt = 0;
+	unsigned int curHistory = 0;
 };
 
 #endif

@@ -4,6 +4,56 @@
 #include <LineBuffer.h>
 #include <OutputChannel.h>
 
+enum KeyCodes
+{
+	KeyCode_Escape = 0x1B,
+	KeyCode_Escape2 = 0x5B,
+	KeyCode_Escape3 = 0x33,
+	KeyCode_End = 0x46,
+	KeyCode_Home = 0x48,
+	KeyCode_Delete = 0x7E,
+	KeyCode_Return = 0x0A,
+	KeyCode_Tab = 0x09,
+	KeyCode_Backspace = 0x7F,
+	KeyCode_UpArrow = 0x41,
+	KeyCode_DownArrow = 0x42,
+	KeyCode_RightArrow = 0x43,
+	KeyCode_LeftArrow = 0x44,
+
+	KeyCode_VisSpace = 0x20,
+	KeyCode_VisExclMark = 0x21,
+	KeyCode_VisDoubleQuotes = 0x22,
+	KeyCode_VisSharp = 0x23,
+	KeyCode_VisDollar = 0x24,
+	KeyCode_VisPercent = 0x25,
+	KeyCode_VisAmpercend = 0x26,
+	KeyCode_VisSingleQuote = 0x27,
+	KeyCode_VisLeftParanth = 0x28,
+	KeyCode_VisRightParanth = 0x29,
+	KeyCode_VisAsterisk = 0x2A,
+	KeyCode_VisPlusSign = 0x2B,
+	KeyCode_VisComma = 0x2C,
+	KeyCode_VisMinusSign = 0x2D,
+	KeyCode_VisDot = 0x2E,
+	KeyCode_VisSlash = 0x2F,
+	KeyCode_VisColon = 0x3A,
+	KeyCode_VisSemiColon = 0x3B,
+	KeyCode_VisLessThan = 0x3C,
+	KeyCode_VisEqual = 0x3D,
+	KeyCode_VisGrtThan = 0x3E,
+	KeyCode_VisQuestion = 0x3F,
+	KeyCode_VisAtSign = 0x40,
+	KeyCode_VisLeftBracket = 0x5B,
+	KeyCode_VisBackSlash = 0x5C,
+	KeyCode_VisRightBracket = 0x5D,
+	KeyCode_VisCaret = 0x5E,
+	KeyCode_VisUnderscore = 0x5F,
+	KeyCode_VisLeftBraces = 0x7B,
+	KeyCode_VisPerpendicular = 0x7C,
+	KeyCode_VisRightBraces = 0x7D,
+	KeyCode_VisTilde = 0x7E,
+};
+
 class KeyCommand
 {
 public:
@@ -26,7 +76,7 @@ public:
 	~KeyConverter();
 	Key & ToKey(const char *str);
 private:
-	static constexpr int UNIQ_KEY_COUNT = 13;
+	static constexpr unsigned int UNIQ_KEY_COUNT = 13;
 	static constexpr unsigned char CODE_ESC_START = 0x1B;
 	Key *keyList[UNIQ_KEY_COUNT];
 	bool isEscapeSequence = false;

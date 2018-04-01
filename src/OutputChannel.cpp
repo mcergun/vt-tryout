@@ -42,7 +42,7 @@ int OutputChannel::Read(void *buf)
 	return read(0, buf, 1);
 }
 
-int OutputChannel::Write(const void *buf, int len)
+int OutputChannel::Write(const void *buf, unsigned int len)
 {
 	int ret = 0;
 	const char *cbuf = reinterpret_cast<const char *>(buf);
@@ -84,7 +84,7 @@ int OutputChannel::InsertChar(const char c)
 	return ret;
 }
 
-int OutputChannel::InsertCharAt(const char c, int idx)
+int OutputChannel::InsertCharAt(const char c, unsigned int idx)
 {
 	int ret = 0;
 	ret = MoveCursorToStart();

@@ -29,30 +29,6 @@ int LineBuffer::AddToHistory()
 int LineBuffer::AddToHistory(Line &ln)
 {
 	int ret = 0;
-	// if (historyCnt < MAX_HISTORY_CNT)
-	// {
-	// 	if (historyCnt == 0)
-	// 	{
-	// 		history[historyCnt++] = ln;
-	// 		curHistory = historyCnt;
-	// 	}
-	// 	else
-	// 	{
-	// 		if (history[historyCnt - 1] != ln && ln.GetLength() > 0)
-	// 		{
-	// 			history[historyCnt++] = ln;
-	// 			curHistory = historyCnt;
-	// 		}
-	// 		else
-	// 		{
-	// 			ret = -1;
-	// 		}
-	// 	}
-	// }
-	// else
-	// {
-	// 	ret = -1;
-	// }
 
 	if (historyCnt == 0)
 	{
