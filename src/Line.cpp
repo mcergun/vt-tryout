@@ -163,6 +163,14 @@ int Line::Clear()
 
 int Line::AutoCompleteCurPos()
 {
+	int ret = -1;
+
+	// TODO: Remove this later when there is an actual AutoComplete library
+	if (completer == nullptr)
+	{
+		completer = new AutoComplete();
+	}
+
 	if (completer != nullptr)
 	{
 		if (curPos == lineLen)
@@ -183,23 +191,13 @@ int Line::AutoCompleteCurPos()
 					strncpy(&lineBuf[curPos], &word.ptr[curLen], addLen);
 					lineLen += addLen;
 					curPos = lineLen;
+					ret = 0;
 				}
 			}
 		}
-		// const char *ans = completer->GetCandidate(curWord);
-		// if (strcmp(curWord, ans) != 0)
-		// {
-		// 	curPos += (strlen(ans) - strlen(curWord));
-		// 	lineLen += (strlen(ans) - strlen(curWord));
-		// 	strcpy(curWord, ans);
-		// }
-	}
-	else
-	{
-		completer = new AutoComplete();
 	}
 
-	return 0;
+	return ret;
 }
 
 unsigned int Line::GetStartIdxOfWord()

@@ -301,9 +301,12 @@ int KeyTab::Execute(LineBuffer &lb, OutputChannel &oc)
 	int ret = 0;
 	Line &curLine = lb.GetCurrentLine();
 	ret = curLine.AutoCompleteCurPos();
-	ret = oc.ClearLine();
-	ret = oc.Write(curLine.GetStringContent(), curLine.GetLength());
-	oc.MoveCursorToStart();
-	oc.MoveCursorRight(curLine.GetPosition());
+	if (!ret)
+	{
+		ret = oc.ClearLine();
+		ret = oc.Write(curLine.GetStringContent(), curLine.GetLength());
+		oc.MoveCursorToStart();
+		oc.MoveCursorRight(curLine.GetPosition());
+	}
 	return ret;
 }
