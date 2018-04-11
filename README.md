@@ -11,6 +11,12 @@ The keycodes are constants embedded in Key classes. Following keys are implement
 - Visual characters
 - Arrow keys
 
+The design is divided into three main parts:
+
+- A single line buffer (Line class) to keep status of a single line (character count, cursor position, etc.)
+- A collection of lines (LineBuffer class) to keep previous entries to the console
+- A key handler (Key, KeyCommand, KeyConverter classes) to handle I/O interactions
+
 Here's a demo from the application:
 
 [![asciicast](https://asciinema.org/a/mAnIU3U4e22e9qAfMp87hgHnm.png)](https://asciinema.org/a/mAnIU3U4e22e9qAfMp87hgHnm)
