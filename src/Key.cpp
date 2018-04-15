@@ -246,10 +246,7 @@ int KeyVisual::Execute(LineBuffer &lb, OutputChannel &oc)
 		oc.ClearLine();
 		oc.Write(curLine.GetStringContent(), curLine.GetLength());
 		oc.MoveCursorToStart();
-		for (unsigned int i = 0; i < curLine.GetPosition(); ++i)
-		{
-			oc.MoveCursorRight();
-		}
+		oc.MoveCursorRight(curLine.GetPosition());
 	}
 	return ret;
 }
